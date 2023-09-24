@@ -88,18 +88,35 @@ auth.post("/signup", async (req, res) => {
       if (!token)
         return res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
 
+      /*
+      region1depth : this.region1depth,
+      */ 
+
+      const agitParams = {
+        owner: user._id,
+        place_name: req.body.agitName,
+        admin_address: req.body.address,
+        r_depth_1: req.body.region1depth,
+        r_depth_2: req.body.region2depth,
+        r_depth_3: req.body.region3depth,
+        location: {
+          type: "Point",
+          coordinates: [Number(req.body.lng), Number(req.body.lat)],
+        },
+      }
+
+      let agit = await Place.create(agitParams)
+
       const updataParams = {
         nickname: req.body.nickname,
-        user_img: req.body.user_img,
+        user_img: req.body.userImg,
         gender: req.body.gender,
         email: req.body.email,
         name: req.body.name,
-        height: req.body.height,
-        weight: req.body.weight,
-        bloodType: req.body.bloodType,
         hidePerson: req.body.hateList,
-        locale: req.body.locale,
         loginType: LOGIN_CODE.EMAIL,
+        agit: agit._id,
+        balance: common.signUpReward,
       };
       await Users.updateOne({ _id: user._id }, updataParams);
       user = await Users.findOne({ _id: user.id });

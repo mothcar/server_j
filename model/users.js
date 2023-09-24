@@ -25,6 +25,7 @@ const initSchema = async ()=>{
     locale:           {type:String, default:''},        // 지역
     hidePerson:       {type:Array, default:[]},         // 지인
     balance:          {type:Number, default: 0 },       // 잔액 
+    agit:             { type: mongoose.Schema.Types.ObjectId, ref: "place" }, // 편집자
 
     // for voice mall
     uuid:             {type:String},                    // 임시 UUID
