@@ -41,7 +41,7 @@ post.post("/name", async (req, res) => {
   }
 });
 
-post.post("/saveContent", async (req, res) => {
+post.post("/createContent", async (req, res) => {
   log("req.body :", req.body);
 
   try {
@@ -67,6 +67,15 @@ post.post("/saveContent", async (req, res) => {
       images: imageParce,
       photo: youtubePhoto,
       youtube_url: qry.youtubeURL,
+      parent_id: qry.parent_id,
+      admin_address: qry.address,
+      r_depth_1: qry.region1depth,
+      r_depth_2: qry.region2depth,
+      r_depth_3: qry.region3depth,
+      location: {
+        type: "Point",
+        coordinates: [Number(req.body.lng), Number(req.body.lat)],
+      },
     }
     const savePost = await Post.create(saveParams);
 
@@ -89,7 +98,20 @@ post.post("/saveContent", async (req, res) => {
       }
       let records = await Ledger.create(rewardParams)
       let updatedUser = await Users.findOneAndUpdate({_id:user_id}, {$set:{balance: records.balance}})
-      res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: updatedUser } });
+      let updatedPlace = await Place.findOneAndUpdate({_id:qry.parent_id}, {$push: { post: savePost._id}})
+      let userInfo = {
+        _id: updatedUser._id,
+        user_name: updatedUser.name,
+        nickname: updatedUser.nickname,
+        email: updatedUser.email,
+        user_img: updatedUser.user_img,
+        simple_msg: updatedUser.simple_msg,
+        job: updatedUser.job,
+        post: updatedUser.post,
+        balance: updatedUser.balance,
+        agit: updatedUser.agit,
+      };
+      res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: userInfo } });
     }
     
   } catch (err) {

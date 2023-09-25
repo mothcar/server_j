@@ -25,7 +25,7 @@ const initSchema = async ()=>{
     locale:           {type:String, default:''},        // 지역
     hidePerson:       {type:Array, default:[]},         // 지인
     balance:          {type:Number, default: 0 },       // 잔액 
-    agit:             { type: mongoose.Schema.Types.ObjectId, ref: "place" }, // 편집자
+    agit:             { type: mongoose.Schema.Types.ObjectId, ref: "place", autopopulate: true }, // agit
 
     // for voice mall
     uuid:             {type:String},                    // 임시 UUID
@@ -55,6 +55,7 @@ const initSchema = async ()=>{
     //   })
     // else
     //   {log('init schema (users): collection found. creation skipped')}
+    users.plugin(require('mongoose-autopopulate'))
 
     global.Users = mongoose.model('users', users)
     return new Promise((resolve, reject)=>{resolve('done')})

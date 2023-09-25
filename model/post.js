@@ -5,7 +5,7 @@ let initSchema = async ()=>{
     post_type:     {type:String, default:'image'},                     // image / youtube
     area:          {type:String, default:'서울'},                       // 지역
     user_id:       {type:mongoose.Schema.Types.ObjectId, ref:'users'}, // 편집자
-    parent_id:     {type:String, default:''},              // Parent id 장소 타이이 다 다르기때문에 ObjectId를 쓸수 없음 
+    parent_id:     {type:mongoose.Schema.Types.ObjectId, ref:'place'}, // Parent id 
     photo:         {type:String, default:''},                          // photo url
     images:        {type:Array, default:[]},                           // images
     youtube_url:   {type:String, default:''},                          // Youtube url

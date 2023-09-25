@@ -62,28 +62,40 @@ admin.get("/getMinimumUserInfo", async (req, res) => {
     }
 
     // 은행정보 가져오기 **************************************************
-    let getLatest = await axios.get(getBankUrl, { params: qs })
-    let userLastBalance = 0
-    console.log('Get Latest : ', getLatest.data.data.item)
-    userLastBalance = getLatest.data.data.item.balance
+    // let getLatest = await axios.get(getBankUrl, { params: qs })
+    // let userLastBalance = 0
+    // console.log('Get Latest : ', getLatest.data.data.item)
+    // userLastBalance = getLatest.data.data.item.balance
 
+    // let returnParam = {
+    //   _id: user._id,
+    //   waiting: user.waiting,
+    //   user_name : user.name,
+    //   email : user.email,
+    //   user_img: user.user_img,
+    //   simple_msg: user.simple_msg,
+    //   job: user.job,
+    //   poss_multi: user.poss_multi,
+    //   poss_bldg: user.poss_bldg,
+    //   poss_facil: user.poss_facil,
+    //   poss_outdoor: user.poss_outdoor,
+    //   post: user.post,
+    //   contribution: user.contribution,
+    //   introduction: user.introduction,
+    //   balance: userLastBalance,
+    // }
     let returnParam = {
       _id: user._id,
-      waiting: user.waiting,
-      user_name : user.name,
-      email : user.email,
+      user_name: user.name,
+      nickname: user.nickname,
+      email: user.email,
       user_img: user.user_img,
       simple_msg: user.simple_msg,
       job: user.job,
-      poss_multi: user.poss_multi,
-      poss_bldg: user.poss_bldg,
-      poss_facil: user.poss_facil,
-      poss_outdoor: user.poss_outdoor,
       post: user.post,
-      contribution: user.contribution,
-      introduction: user.introduction,
-      balance: userLastBalance,
-    }
+      balance: user.balance,
+      agit: user.agit,
+    };
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: returnParam } });
   } catch (err) {
     log("err=", err);

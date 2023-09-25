@@ -144,6 +144,7 @@ auth.post("/signup", async (req, res) => {
         job: user.job,
         post: user.post,
         balance: common.signUpReward,
+        agit: user.agit,
       };
   
       return res.json({
@@ -236,6 +237,7 @@ auth.post("/login", async (req, res) => {
       job: user.job,
       post: user.post,
       balance: user.balance,
+      agit: user.agit,
     };
     console.log("User Info Params : ", userInfo);
 
