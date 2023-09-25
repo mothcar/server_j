@@ -408,16 +408,40 @@ place.get("/getOnePleces", async (req, res) => {
   }
 });
 
-place.get("/getPleces", async (req, res) => {
+// copy from post getPosts with Reduce 
+place.get("/getPlaces", async (req, res) => {
+  console.log('Get Agits..................')
   try {
-    var qry = req.query;
+    let qry = req.query;
+    // console.log('qry.b_lat : ', qry.b_lat)
 
-    // let infocenter = await Infocenter.find().sort({$natural:-1}).limit(1)
-    let places = await Place.find();
-    // res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
-    res
-      .status(200)
-      .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: places } });
+    let b_lat = Number(qry.b_lat);
+    let b_lng = Number(qry.b_lng);
+    let t_lat = Number(qry.t_lat);
+    let t_lng = Number(qry.t_lng);
+
+    let level = req.query.levelType;
+    // log('lat Type : ', typeof b_lat)
+
+    var agits = await Place.find({
+      // level: { $lte: level },
+      location: {
+        $geoWithin: {
+          $box: [
+            [b_lng, b_lat],
+            [t_lng, t_lat],
+          ],
+        },
+      },
+      // on_map: true,
+    })
+    .sort({$natural:-1})
+      // .populate("user_id")
+      // .sort({ hits: -1 })
+      .limit(20); // 15
+    // posts = _.uniqBy(posts, "admin_address");
+
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: agits } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
@@ -431,7 +455,7 @@ place.get("/getPlace", async (req, res) => {
     // console.log('Qry : ', qry)
 
     // let infocenter = await Infocenter.find().sort({$natural:-1}).limit(1)
-    let place = await Place.findOne(qry).populate("parent_id");
+    let place = await Place.findOne(qry).populate("owner");
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
     // res.status(200).json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
   } catch (err) {
