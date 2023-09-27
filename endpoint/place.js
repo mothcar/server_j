@@ -455,7 +455,23 @@ place.get("/getPlace", async (req, res) => {
     // console.log('Qry : ', qry)
 
     // let infocenter = await Infocenter.find().sort({$natural:-1}).limit(1)
-    let place = await Place.findOne(qry).populate("owner");
+    let place = await Place.findOne(qry);
+    let user = await Users.findOne({_id: place.owner._id.toString()})
+    // Object.assign(place, {"userInfo": userInfo});
+    // console.log('User Data : ', user)
+    place.userInfo= {
+      _id: user._id,
+      user_name: user.name,
+      nickname: user.nickname,
+      email: user.email,
+      user_img: user.user_img,
+      simple_msg: user.simple_msg,
+      job: user.job,
+      post: user.post,
+      balance: user.balance,
+      agit: user.agit,
+    };
+    // console.log('Place info : ', place)
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
     // res.status(200).json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
   } catch (err) {
