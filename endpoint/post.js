@@ -120,6 +120,18 @@ post.post("/createContent", async (req, res) => {
   }
 });
 
+post.get("/getOnePost", async (req, res) => {
+  log("name req.query :", req.query);
+  try {
+    let qry = req.query;
+    const post = await Post.findOne({_id:qry.id})
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 post.get("/getPosts", async (req, res) => {
   // log("getPosts req.query :", req.query);
   try {

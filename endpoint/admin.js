@@ -147,6 +147,30 @@ admin.post("/editProfile", async (req, res) => {
   }
 });
 
+admin.get("/getImage", async (req, res) => {
+  console.log('Get image params : ', req.query)
+  try {
+    let getUser = await Users.findOne(req.query);
+    let image
+    if(getUser.user_img.length>0) {
+      image = getUser.user_img[getUser.user_img.length-1]
+    } else image = getUser.user_img[0]
+    const id = getUser._id
+    const nickName = getUser.nickname
+    const sendParams = {
+      id: id,
+      nickName: nickName,
+      image : image
+    }
+    
+    console.log("User Image : ", image);
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: sendParams } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 admin.post("/updateUserImage", async (req, res) => {
   try {
     log("updateUserImage :", req.body);
