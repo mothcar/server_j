@@ -39,6 +39,7 @@ auth.post("/signup", async (req, res) => {
       // if (req.body.email==='aiacademy131@gmail.com') newUser.role = 'SUPER'
       // newUser.name      = req.body.name
       newUser.email = req.body.email.toLowerCase();
+      newUser.user_img = req.body.userImg;
       // newUser.name      = req.body.name.trim()
       newUser.password = await bcrypt.hash(req.body.password, BCRYPT.SALT_SIZE);
 
