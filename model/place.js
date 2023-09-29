@@ -19,6 +19,7 @@ let initSchema = async ()=>{
     description:    {type:String, default:''},                    // description
     image:          {type:Array, default:[]},                     // content image
     owner:          {type:mongoose.Schema.Types.ObjectId, ref:'users'},    // 소유자 
+    owner_img:      {type:Array, default:[]},                     // 오너 image
     member:         [{type:mongoose.Schema.Types.ObjectId, ref:'users'}],    // community member 
     post:           [{type:mongoose.Schema.Types.ObjectId, ref:'post'}],     // post
     history:        [{type:mongoose.Schema.Types.ObjectId, ref:'history'}],  // history

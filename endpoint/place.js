@@ -522,7 +522,7 @@ place.post("/editPosition", async (req, res) => {
   }
 });
 
-// editPlaceInfo
+// editPlaceInfo  owner_img
 place.post("/editPlaceInfo", async (req, res) => {
   try {
     var qry = req.body;
@@ -536,15 +536,6 @@ place.post("/editPlaceInfo", async (req, res) => {
   }
 });
 
-// addPlace
-/*
-
-_id: this.placeData._id,
-place_name: this.newPlaceName,
-lat: this.lat,
-lng: this.lng,
-
-*/
 place.post("/addPlace", async (req, res) => {
   try {
     var qry = req.body;

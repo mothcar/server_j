@@ -94,6 +94,7 @@ auth.post("/signup", async (req, res) => {
 
       const agitParams = {
         owner: user._id,
+        owner_img: user.user_img[0],
         place_name: req.body.agitName,
         admin_address: req.body.address,
         r_depth_1: req.body.region1depth,
