@@ -544,7 +544,6 @@ post.get("/getByqueryParams", async (req, res) => {
     // console.log('Parent id : ', qry)
     let posts = await Post.find(qry)
       .sort({ createdAt: -1 })
-      .populate("user_id");
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
   } catch (err) {
     log("err=", err);
