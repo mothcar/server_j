@@ -40,6 +40,8 @@ auth.post("/signup", async (req, res) => {
       // newUser.name      = req.body.name
       newUser.email = req.body.email.toLowerCase();
       newUser.user_img = req.body.userImg;
+      newUser.year = Number(req.body.year);
+      newUser.birth = req.body.birth;
       // newUser.name      = req.body.name.trim()
       newUser.password = await bcrypt.hash(req.body.password, BCRYPT.SALT_SIZE);
 
@@ -140,6 +142,7 @@ auth.post("/signup", async (req, res) => {
         _id: user._id,
         user_name: user.name,
         nickname: user.nickname,
+        year: user.year,
         email: user.email,
         user_img: user.user_img,
         simple_msg: user.simple_msg,
@@ -233,6 +236,7 @@ auth.post("/login", async (req, res) => {
       _id: user._id,
       user_name: user.name,
       nickname: user.nickname,
+      year: user.year,
       email: user.email,
       user_img: user.user_img,
       simple_msg: user.simple_msg,

@@ -88,6 +88,7 @@ admin.get("/getMinimumUserInfo", async (req, res) => {
       _id: user._id,
       user_name: user.name,
       nickname: user.nickname,
+      year: user.year,
       email: user.email,
       user_img: user.user_img,
       simple_msg: user.simple_msg,

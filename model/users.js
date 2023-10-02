@@ -8,6 +8,8 @@ const initSchema = async ()=>{
     gender:           {type:String, default:''},        // M / W
     name:             {type:String, default:''},        // 사용자 이름
     nickname:         {type:String, default:''},        // 닉네임 
+    year:             {type:Number, default:1961},      // 생년 
+    birth:            {type:String, default:''},        // 생월일 
     password:         {type:String},                    // 로그인 암호
     role:             {type:String, default:'USER'},    // 'ADMIN, OPERATOR, USER', 'POLITICS ADMINIST 행정관리자 명칭들'
     address:          {type:String, default:'대한민국'},  // 행정주소
