@@ -146,15 +146,52 @@ admin.get("/getFollows", async (req, res) => {
         // console.log('user : ', user)
         let innerUser = {
           _id: user._id,
-          user_name: user.name,
           nickname: user.nickname,
           year: user.year,
-          email: user.email,
           user_img: user.user_img,
           simple_msg: user.simple_msg,
           job: user.job,
           post: user.post,
-          balance: user.balance,
+          agit: user.agit,
+        };
+        result.push(innerUser)
+      }
+      // console.log('result : ', result )
+      return result
+    }
+    // console.log('final : ', final )
+    
+    
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+// getFollowers
+admin.get("/getFollowers", async (req, res) => {
+  try {
+    // follow
+    let followUsers = await Users.findOne(req.query);
+    let followers = followUsers.follower;
+    getfollow().then(function(results){
+      // access results here by chaining to the returned promise
+      res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: results } });
+  });
+    async function getfollow() {
+      let result = []
+      for (let i = 0; followers.length > i; i++) {
+        let strId = followers[i].valueOf();
+        console.log("strId : ", strId);
+        let user = await Users.findOne({ _id: strId });
+        // console.log('user : ', user)
+        let innerUser = {
+          _id: user._id,
+          nickname: user.nickname,
+          year: user.year,
+          user_img: user.user_img,
+          simple_msg: user.simple_msg,
+          job: user.job,
+          post: user.post,
           agit: user.agit,
         };
         result.push(innerUser)
