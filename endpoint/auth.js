@@ -138,7 +138,7 @@ auth.post("/signup", async (req, res) => {
       }
       await Ledger.create(rewardParams)
 
-      let userInfo = {
+      let myInfo = {
         _id: user._id,
         user_name: user.name,
         nickname: user.nickname,
@@ -150,11 +150,13 @@ auth.post("/signup", async (req, res) => {
         post: user.post,
         balance: common.signUpReward,
         agit: user.agit,
+        follow: user.follow,
+        follower: user.follower,
       };
   
       return res.json({
         msg: RCODE.OPERATION_SUCCEED,
-        data: { item: token, info: userInfo },
+        data: { item: token, info: myInfo },
       });
     } catch (err) {
       log("err=", err);
@@ -232,7 +234,7 @@ auth.post("/login", async (req, res) => {
 
     await Users.updateOne({ _id: user._id }, { loginType: LOGIN_CODE.EMAIL });
     console.log("User info : ", user);
-    let userInfo = {
+    let myInfo = {
       _id: user._id,
       user_name: user.name,
       nickname: user.nickname,
@@ -244,12 +246,14 @@ auth.post("/login", async (req, res) => {
       post: user.post,
       balance: user.balance,
       agit: user.agit,
+      follow: user.follow,
+      follower: user.follower,
     };
-    console.log("User Info Params : ", userInfo);
+    console.log("User Info Params : ", myInfo);
 
     return res.json({
       msg: RCODE.OPERATION_SUCCEED,
-      data: { item: token, info: userInfo },
+      data: { item: token, info: myInfo },
     });
   } catch (err) {
     log("err=", err);

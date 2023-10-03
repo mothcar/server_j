@@ -9,8 +9,8 @@ const dictionary = require("../helper/dictionary");
 const { ObjectId } = require("mongodb");
 const { Blob } = require("buffer");
 const tms = require("../helper/tms");
-const getBankUrl = BANK_URL+'/ledger/findUserRecord';
-const postBankUrl = BANK_URL+'/ledger/insertRecord';
+const getBankUrl = BANK_URL + "/ledger/findUserRecord";
+const postBankUrl = BANK_URL + "/ledger/insertRecord";
 
 var dotenv = require("dotenv");
 // const multiPlace = require("../model/multiPlace.js");
@@ -39,8 +39,8 @@ admin.get("/checkMe", async (req, res) => {
   try {
     const accessKey = req.query.accessKey;
     let user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
-    console.log('User Info by Token : ', user_info)
-    let userId = user_info._id
+    console.log("User Info by Token : ", user_info);
+    let userId = user_info._id;
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: userId } });
   } catch (err) {
     log("err=", err);
@@ -50,16 +50,17 @@ admin.get("/checkMe", async (req, res) => {
 
 admin.get("/getMinimumUserInfo", async (req, res) => {
   try {
-    let qry = req.query
-    const user = await Users.findOne(qry)
-    let userImg =''
-    if(user.user_img.length>0) userImg = user.user_img[user.user_img.length-1]
+    let qry = req.query;
+    const user = await Users.findOne(qry);
+    let userImg = "";
+    if (user.user_img.length > 0)
+      userImg = user.user_img[user.user_img.length - 1];
     // console.log('typeof : ', typeof user._id)
     // console.log('user id  : ', user._id)
     const qs = {
-      service_name: 'pinpoint',
-      user_id: user._id.toString()
-    }
+      service_name: "pinpoint",
+      user_id: user._id.toString(),
+    };
 
     // 은행정보 가져오기 **************************************************
     // let getLatest = await axios.get(getBankUrl, { params: qs })
@@ -104,31 +105,100 @@ admin.get("/getMinimumUserInfo", async (req, res) => {
   }
 });
 
-// 
+// setFollow
+admin.post("/setFollow", async (req, res) => {
+  try {
+    const accessKey = req.body.accessKey;
+    let user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    console.log("User Info by Token : ", user_info);
+    let userId = user_info._id;
+    // follow
+    let myInfo = await Users.findOneAndUpdate(
+      { _id: userId },
+      { $push: { follow: req.body.option.follow } }
+    );
+    let userInfo = await Users.findOneAndUpdate(
+      { _id: req.body.option.userId },
+      { $push: { follower: userId } }
+    );
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: userInfo } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+// getFollows
+admin.get("/getFollows", async (req, res) => {
+  try {
+    // follow
+    let followUsers = await Users.findOne(req.query);
+    let follows = followUsers.follow;
+    getfollow().then(function(results){
+      // access results here by chaining to the returned promise
+      res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: results } });
+  });
+    async function getfollow() {
+      let result = []
+      for (let i = 0; follows.length > i; i++) {
+        let strId = follows[i].valueOf();
+        console.log("strId : ", strId);
+        let user = await Users.findOne({ _id: strId });
+        // console.log('user : ', user)
+        let innerUser = {
+          _id: user._id,
+          user_name: user.name,
+          nickname: user.nickname,
+          year: user.year,
+          email: user.email,
+          user_img: user.user_img,
+          simple_msg: user.simple_msg,
+          job: user.job,
+          post: user.post,
+          balance: user.balance,
+          agit: user.agit,
+        };
+        result.push(innerUser)
+      }
+      // console.log('result : ', result )
+      return result
+    }
+    // console.log('final : ', final )
+    
+    
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
+//
 admin.post("/editProfile", async (req, res) => {
   try {
     log("editProfile :", req.body);
-    const qry = req.body
-    const accessKey = qry.accessKey
+    const qry = req.body;
+    const accessKey = qry.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
-    let updateUser = await Users.findOneAndUpdate({_id: user_info._id}, { $set: qry.data })
-    let user = await Users.findOne({_id: user_info._id})
+    let updateUser = await Users.findOneAndUpdate(
+      { _id: user_info._id },
+      { $set: qry.data }
+    );
+    let user = await Users.findOne({ _id: user_info._id });
     const qs = {
-      service_name: 'pinpoint',
-      user_id: user._id.toString()
-    }
+      service_name: "pinpoint",
+      user_id: user._id.toString(),
+    };
 
     // 은행정보 가져오기 **************************************************
-    let getLatest = await axios.get(getBankUrl, { params: qs })
-    let userLastBalance = 0
-    console.log('Get Latest : ', getLatest.data.data.item)
-    userLastBalance = getLatest.data.data.item.balance
+    let getLatest = await axios.get(getBankUrl, { params: qs });
+    let userLastBalance = 0;
+    console.log("Get Latest : ", getLatest.data.data.item);
+    userLastBalance = getLatest.data.data.item.balance;
 
     let returnParam = {
       _id: user._id,
       waiting: user.waiting,
-      user_name : user.name,
-      email : user.email,
+      user_name: user.name,
+      email: user.email,
       user_img: user.user_img,
       simple_msg: user.simple_msg,
       job: user.job,
@@ -140,7 +210,7 @@ admin.post("/editProfile", async (req, res) => {
       contribution: user.contribution,
       introduction: user.introduction,
       balance: userLastBalance,
-    }
+    };
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: returnParam } });
   } catch (err) {
     log("err=", err);
@@ -149,21 +219,21 @@ admin.post("/editProfile", async (req, res) => {
 });
 
 admin.get("/getImage", async (req, res) => {
-  console.log('Get image params : ', req.query)
+  console.log("Get image params : ", req.query);
   try {
     let getUser = await Users.findOne(req.query);
-    let image
-    if(getUser.user_img.length>0) {
-      image = getUser.user_img[getUser.user_img.length-1]
-    } else image = getUser.user_img[0]
-    const id = getUser._id
-    const nickName = getUser.nickname
+    let image;
+    if (getUser.user_img.length > 0) {
+      image = getUser.user_img[getUser.user_img.length - 1];
+    } else image = getUser.user_img[0];
+    const id = getUser._id;
+    const nickName = getUser.nickname;
     const sendParams = {
       id: id,
       nickName: nickName,
-      image : image
-    }
-    
+      image: image,
+    };
+
     console.log("User Image : ", image);
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: sendParams } });
   } catch (err) {
@@ -175,25 +245,28 @@ admin.get("/getImage", async (req, res) => {
 admin.post("/updateUserImage", async (req, res) => {
   try {
     log("updateUserImage :", req.body);
-    const qry = req.body
-    await Users.findOneAndUpdate({_id: qry._id}, { $push: { user_img: qry.image } })
+    const qry = req.body;
+    await Users.findOneAndUpdate(
+      { _id: qry._id },
+      { $push: { user_img: qry.image } }
+    );
 
     const qs = {
-      service_name: 'pinpoint',
-      user_id: qry._id.toString()
-    }
+      service_name: "pinpoint",
+      user_id: qry._id.toString(),
+    };
 
-    let getLatest = await axios.get(getBankUrl, { params: qs })
-    let userLastBalance = 0
-    console.log('Get Latest : ', getLatest.data.data.item)
-    userLastBalance = getLatest.data.data.item.balance
+    let getLatest = await axios.get(getBankUrl, { params: qs });
+    let userLastBalance = 0;
+    console.log("Get Latest : ", getLatest.data.data.item);
+    userLastBalance = getLatest.data.data.item.balance;
 
-    let user = await Users.findOne({_id: qry._id})
+    let user = await Users.findOne({ _id: qry._id });
     let returnParam = {
       _id: user._id,
       waiting: user.waiting,
-      user_name : user.name,
-      email : user.email,
+      user_name: user.name,
+      email: user.email,
       user_img: user.user_img,
       simple_msg: user.simple_msg,
       job: user.job,
@@ -205,7 +278,7 @@ admin.post("/updateUserImage", async (req, res) => {
       contribution: user.contribution,
       introduction: user.introduction,
       balance: userLastBalance,
-    }
+    };
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: returnParam } });
   } catch (err) {
     log("err=", err);
@@ -217,12 +290,14 @@ admin.get("/checkExpire", async (req, res) => {
   try {
     const accessKey = req.query.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
-    console.log('User Info by Token : ', user_info)
-    if(user_info.iat >= user_info.exp) return res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: false } });
-    if(user_info) return res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: true } });
+    console.log("User Info by Token : ", user_info);
+    if (user_info.iat >= user_info.exp)
+      return res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: false } });
+    if (user_info)
+      return res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: true } });
   } catch (err) {
     log("err=", err);
-    res.json({ msg: RCODE.SERVER_ERROR, data: {item: false} });
+    res.json({ msg: RCODE.SERVER_ERROR, data: { item: false } });
   }
 });
 // 국회의사당 생성 MULTI -> PUBLIC
