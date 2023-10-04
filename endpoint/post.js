@@ -11,7 +11,7 @@ const tms = require("../helper/tms");
 const { ObjectId } = require("mongodb");
 const getBankUrl = BANK_URL + "/ledger/findUserRecord";
 const postBankurl = BANK_URL + "/ledger/insertRecord";
-const common = require('../helper/common')
+const common = require("../helper/common");
 
 //--------------------------------------------------
 // Default Boiler Function 2022
@@ -50,12 +50,12 @@ post.post("/createContent", async (req, res) => {
     const accessKey = qry.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
     var user_id = user_info._id;
-    
-    let imageParce = JSON.parse(qry.images)
-    let youtubePhoto = qry.youtubePhoto
 
-    if(imageParce.length>0) {
-      youtubePhoto = imageParce[0]
+    let imageParce = JSON.parse(qry.images);
+    let youtubePhoto = qry.youtubePhoto;
+
+    if (imageParce.length > 0) {
+      youtubePhoto = imageParce[0];
     }
 
     const saveParams = {
@@ -76,29 +76,37 @@ post.post("/createContent", async (req, res) => {
         type: "Point",
         coordinates: [Number(req.body.lng), Number(req.body.lat)],
       },
-    }
+    };
     const savePost = await Post.create(saveParams);
 
     let time_obj = common.getToday();
 
-    if(savePost) {
-      let bal = 0
-      let lastRecord = await Ledger.find({user: user_id}).sort({ "createdAt": -1 }).limit(1)
-      console.log('User Record : ', lastRecord)
-      if(lastRecord.length>0) bal = lastRecord[0].balance
-      console.log("Error Check : ", bal)
+    if (savePost) {
+      let bal = 0;
+      let lastRecord = await Ledger.find({ user: user_id })
+        .sort({ createdAt: -1 })
+        .limit(1);
+      console.log("User Record : ", lastRecord);
+      if (lastRecord.length > 0) bal = lastRecord[0].balance;
+      console.log("Error Check : ", bal);
       let rewardParams = {
-        user: user_id,    
+        user: user_id,
         trans_date: time_obj.date,
         trans_time: time_obj.time,
-        description: '글쓰기 보상',
-        type: 'GET', 
+        description: "글쓰기 보상",
+        type: "GET",
         amount: common.reward,
         balance: bal + common.reward,
-      }
-      let records = await Ledger.create(rewardParams)
-      let updatedUser = await Users.findOneAndUpdate({_id:user_id}, {$set:{balance: records.balance}})
-      let updatedPlace = await Place.findOneAndUpdate({_id:qry.parent_id}, {$push: { post: savePost._id}})
+      };
+      let records = await Ledger.create(rewardParams);
+      let updatedUser = await Users.findOneAndUpdate(
+        { _id: user_id },
+        { $set: { balance: records.balance } }
+      );
+      let updatedPlace = await Place.findOneAndUpdate(
+        { _id: qry.parent_id },
+        { $push: { post: savePost._id } }
+      );
       let userInfo = {
         _id: updatedUser._id,
         user_name: updatedUser.name,
@@ -113,7 +121,30 @@ post.post("/createContent", async (req, res) => {
       };
       res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: userInfo } });
     }
-    
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
+// removeStory
+/*
+
+*/
+post.post("/removeStory", async (req, res) => {
+  log("removeStory req.body :", req.body);
+  try {
+    let qry = req.body;
+
+    // place id : 651ab8ea26808370f63596e3
+    const post = await Post.deleteOne({ _id: qry.id });
+    const place = await Place.findOne({ _id: qry.parentId });
+    let list = place.post;
+    list = list.filter(function (item) {
+      return item.valueOf() !== qry.id;
+    });
+    const updatePlace = await Place.findOneAndUpdate({ _id: qry.parentId }, {post: list})
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: updatePlace } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
@@ -124,7 +155,7 @@ post.get("/getOnePost", async (req, res) => {
   log("name req.query :", req.query);
   try {
     let qry = req.query;
-    const post = await Post.findOne({_id:qry.id})
+    const post = await Post.findOne({ _id: qry.id });
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
   } catch (err) {
     log("err=", err);
@@ -157,7 +188,7 @@ post.get("/getPosts", async (req, res) => {
       },
       on_map: true,
     })
-    .sort({$natural:-1})
+      .sort({ $natural: -1 })
       // .populate("user_id")
       // .sort({ hits: -1 })
       .limit(20); // 15
@@ -296,7 +327,9 @@ post.post("/createSimpleMsg", async (req, res) => {
     //   { _id: qry.target_user_id },
     //   { $push: { simple_msg: new ObjectId(msg._id) } }
     // );
-    let msgs = await SimpleMsg.find({ target_id: qry.target_user_id }).populate('user_id').sort({$natural:-1})
+    let msgs = await SimpleMsg.find({ target_id: qry.target_user_id })
+      .populate("user_id")
+      .sort({ $natural: -1 });
     // console.log("msgs...", msgs);
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: msgs } });
     // console.log('post Result : ', post)
@@ -311,7 +344,9 @@ post.get("/getMsgs", async (req, res) => {
   // log("getLocalPosts req.query :", req.query);
   try {
     let qry = req.query;
-    let msgs = await SimpleMsg.find(qry).populate('user_id').sort({$natural:-1});
+    let msgs = await SimpleMsg.find(qry)
+      .populate("user_id")
+      .sort({ $natural: -1 });
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: msgs } });
   } catch (err) {
     log("err=", err);
@@ -422,36 +457,35 @@ post.post("/createPost", async (req, res) => {
 
     // --- 은행 업무 처리 ---
     if (posts || onePost) {
-    // if (false) {
+      // if (false) {
       const qs = {
-        service_name: 'pinpoint',
-        user_id: user_id
-      }
-  
-      // 은행정보 가져오기 **************************************************
-      let getLatest = await axios.get(getBankUrl, { params: qs })
-      let userLastBalance = 0
-      console.log('Get Latest : ', getLatest.data.data.item)
-      userLastBalance = getLatest.data.data.item.balance
+        service_name: "pinpoint",
+        user_id: user_id,
+      };
 
-      console.log('User Balance : ', userLastBalance)
-        
-      
-      userLastBalance += REWARD.createPost
+      // 은행정보 가져오기 **************************************************
+      let getLatest = await axios.get(getBankUrl, { params: qs });
+      let userLastBalance = 0;
+      console.log("Get Latest : ", getLatest.data.data.item);
+      userLastBalance = getLatest.data.data.item.balance;
+
+      console.log("User Balance : ", userLastBalance);
+
+      userLastBalance += REWARD.createPost;
       // 유저에게 가입시 2천원 지급  param
       let createParams = {
-        service_id: 'pinpo20231111',
-        service_name: 'pinpoint',
+        service_id: "pinpo20231111",
+        service_name: "pinpoint",
         user_id: user_id,
-        content: '보상',
-        description: '글쓰기 보상',
-        type: 'GET',
+        content: "보상",
+        description: "글쓰기 보상",
+        type: "GET",
         amount: REWARD.createPost,
-        balance: userLastBalance,              // Reward / createPost signUp
-      }
+        balance: userLastBalance, // Reward / createPost signUp
+      };
 
       let insertRecord = await axios.post(postBankurl, createParams);
-      console.log('Bank Result : ', insertRecord.data.data.item)
+      console.log("Bank Result : ", insertRecord.data.data.item);
     }
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
 
@@ -542,8 +576,7 @@ post.get("/getByqueryParams", async (req, res) => {
   try {
     let qry = req.query;
     // console.log('Parent id : ', qry)
-    let posts = await Post.find(qry)
-      .sort({ createdAt: -1 })
+    let posts = await Post.find(qry).sort({ createdAt: -1 });
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
   } catch (err) {
     log("err=", err);
@@ -554,24 +587,24 @@ post.get("/getByqueryParams", async (req, res) => {
 // updatePost
 post.post("/updatePost", async (req, res) => {
   try {
-    const qry = req.body 
+    const qry = req.body;
     /*
     _id: this.storyData._id,
     og_title: this.postTitle,
     comment: this.postContent
-    */ 
+    */
 
-    // _id post 에서 
-    // update 
-    let updatedPost = await Post.findOneAndUpdate({_id:qry._id}, {$set:{og_title: qry.og_title,comment:qry.comment }})
+    // _id post 에서
+    // update
+    let updatedPost = await Post.findOneAndUpdate(
+      { _id: qry._id },
+      { $set: { og_title: qry.og_title, comment: qry.comment } }
+    );
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: updatedPost } });
-  } catch(err){
+  } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
-})
-
-
-
+});
 
 module.exports = post;
