@@ -25,10 +25,6 @@ const initSchema = async ()=>{
     favorite:         {type:Array, default:[]},         // 즐겨찾기 
     introduction:     {type:String, default:''},        // 소개
     basic_info:        {type:Array, default:[{height:null},{weight:null},{blood_type:null}]},        // 소개
-    height:           {type:String, default:''},        // 키
-    weight:           {type:String, default:''},        // 몸무게
-    bloodType:        {type:String, default:''},        // 혈액형
-    locale:           {type:String, default:''},        // 지역
     hidePerson:       {type:Array, default:[]},         // 지인
     balance:          {type:Number, default: 0 },       // 잔액 
     agit:             { type: mongoose.Schema.Types.ObjectId, ref: "place", autopopulate: true }, // agit
