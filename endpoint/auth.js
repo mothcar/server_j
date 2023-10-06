@@ -42,7 +42,6 @@ auth.post("/signup", async (req, res) => {
       newUser.user_img = req.body.userImg;
       newUser.year = Number(req.body.year);
       newUser.birth = req.body.birth;
-      newUser.married = req.body.married
       // newUser.name      = req.body.name.trim()
       newUser.password = await bcrypt.hash(req.body.password, BCRYPT.SALT_SIZE);
 
@@ -115,6 +114,7 @@ auth.post("/signup", async (req, res) => {
       const updataParams = {
         nickname: req.body.nickname,
         user_img: req.body.userImg,
+        married: req.body.married,
         gender: req.body.gender,
         email: req.body.email,
         name: req.body.name,
@@ -143,6 +143,7 @@ auth.post("/signup", async (req, res) => {
         _id: user._id,
         user_name: user.name,
         nickname: user.nickname,
+        gender: user.gender,
         year: user.year,
         email: user.email,
         user_img: user.user_img,
@@ -234,11 +235,12 @@ auth.post("/login", async (req, res) => {
       return res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
 
     await Users.updateOne({ _id: user._id }, { loginType: LOGIN_CODE.EMAIL });
-    console.log("User info : ", user);
+    // console.log("User info : ", user);
     let myInfo = {
       _id: user._id,
       user_name: user.name,
       nickname: user.nickname,
+      gender: user.gender,
       year: user.year,
       email: user.email,
       user_img: user.user_img,
