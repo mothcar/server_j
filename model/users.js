@@ -24,6 +24,7 @@ const initSchema = async ()=>{
     follower:         [{type:mongoose.Schema.Types.ObjectId, ref:'users'}],
     favorite:         {type:Array, default:[]},         // 즐겨찾기 
     introduction:     {type:String, default:''},        // 소개
+    basic_info:        {type:Array, default:[{height:null},{weight:null},{blood_type:null}]},        // 소개
     height:           {type:String, default:''},        // 키
     weight:           {type:String, default:''},        // 몸무게
     bloodType:        {type:String, default:''},        // 혈액형
