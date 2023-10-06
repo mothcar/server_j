@@ -42,6 +42,7 @@ auth.post("/signup", async (req, res) => {
       newUser.user_img = req.body.userImg;
       newUser.year = Number(req.body.year);
       newUser.birth = req.body.birth;
+      newUser.married = req.body.married
       // newUser.name      = req.body.name.trim()
       newUser.password = await bcrypt.hash(req.body.password, BCRYPT.SALT_SIZE);
 

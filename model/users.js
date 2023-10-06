@@ -10,6 +10,7 @@ const initSchema = async ()=>{
     nickname:         {type:String, default:''},        // 닉네임 
     year:             {type:Number, default:1961},      // 생년 
     birth:            {type:String, default:''},        // 생월일 
+    married:          {type:String, default:''},        // 결혼상태 
     password:         {type:String},                    // 로그인 암호
     role:             {type:String, default:'USER'},    // 'ADMIN, OPERATOR, USER', 'POLITICS ADMINIST 행정관리자 명칭들'
     address:          {type:String, default:'대한민국'},  // 행정주소
