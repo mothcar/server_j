@@ -220,7 +220,24 @@ admin.post("/updateBasicInfo", async (req, res) => {
       { $set: {basic_info: qry.option} }
     );
     let user = await Users.findOne({ _id: user_info._id });
-    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: updateUser } });
+    let myInfo = {
+      _id: user._id,
+      user_name: user.name,
+      nickname: user.nickname,
+      gender: user.gender,
+      year: user.year,
+      email: user.email,
+      user_img: user.user_img,
+      simple_msg: user.simple_msg,
+      job: user.job,
+      post: user.post,
+      balance: user.balance,
+      basic_info: user.basic_info,
+      agit: user.agit,
+      follow: user.follow,
+      follower: user.follower,
+    };
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
