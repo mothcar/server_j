@@ -24,7 +24,7 @@ const initSchema = async ()=>{
     follower:         [{type:mongoose.Schema.Types.ObjectId, ref:'users'}],
     favorite:         {type:Array, default:[]},         // 즐겨찾기 
     introduction:     {type:String, default:''},        // 소개
-    basic_info:       {type:Array, default:[{height:[],value:0},{weight:[],value:0},{blood_type:[],value:0}]},        // 소개
+    basic_info:       {type:Object, default:{height:{value:[],price:0},weight:{value:[],price:0},blood_type:{value:[],price:0}}}, // 기본정보
     hidePerson:       {type:Array, default:[]},         // 지인
     balance:          {type:Number, default: 0 },       // 잔액 
     agit:             { type: mongoose.Schema.Types.ObjectId, ref: "place", autopopulate: true }, // agit
