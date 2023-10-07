@@ -244,6 +244,43 @@ admin.post("/updateBasicInfo", async (req, res) => {
   }
 });
 
+// updateMyValues
+admin.post("/updateMyValues", async (req, res) => {
+  try {
+    log("editProfile :", req.body);
+    const qry = req.body;
+    const accessKey = qry.accessKey;
+    var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    let updateUser = await Users.findOneAndUpdate(
+      { _id: user_info._id },
+      { $set: {my_values: qry.option} }
+    );
+    let user = await Users.findOne({ _id: user_info._id });
+    let myInfo = {
+      _id: user._id,
+      user_name: user.name,
+      nickname: user.nickname,
+      gender: user.gender,
+      year: user.year,
+      email: user.email,
+      user_img: user.user_img,
+      simple_msg: user.simple_msg,
+      job: user.job,
+      post: user.post,
+      balance: user.balance,
+      basic_info: user.basic_info,
+      my_values: user.my_values,
+      agit: user.agit,
+      follow: user.follow,
+      follower: user.follower,
+    };
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 //
 admin.post("/editProfile", async (req, res) => {
   try {
