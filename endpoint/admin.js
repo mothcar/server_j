@@ -85,19 +85,23 @@ admin.get("/getMinimumUserInfo", async (req, res) => {
     //   introduction: user.introduction,
     //   balance: userLastBalance,
     // }
+    let rawVal = user.my_values;
+    let validVal = rawVal.filter((item) => item != null);
+    
     let returnParam = {
       _id: user._id,
-      user_name: user.name,
       nickname: user.nickname,
       year: user.year,
-      email: user.email,
       user_img: user.user_img,
       simple_msg: user.simple_msg,
       job: user.job,
       post: user.post,
-      balance: user.balance,
       agit: user.agit,
+      basic_info: user.basic_info,
+      my_values: validVal,
+      answer_set: user.answer_set,
     };
+
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: returnParam } });
   } catch (err) {
     log("err=", err);
@@ -133,19 +137,19 @@ admin.get("/getFollows", async (req, res) => {
     // follow
     let followUsers = await Users.findOne(req.query);
     let follows = followUsers.follow;
-    getfollow().then(function(results){
+    getfollow().then(function (results) {
       // access results here by chaining to the returned promise
       res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: results } });
-  });
+    });
     async function getfollow() {
-      let result = []
+      let result = [];
       for (let i = 0; follows.length > i; i++) {
         let strId = follows[i].valueOf();
         console.log("strId : ", strId);
         let user = await Users.findOne({ _id: strId });
         // console.log('user : ', user)
-        let rawVal = user.my_values
-        let validVal = rawVal.filter(item=>item!=null)
+        let rawVal = user.my_values;
+        let validVal = rawVal.filter((item) => item != null);
         let innerUser = {
           _id: user._id,
           nickname: user.nickname,
@@ -159,14 +163,12 @@ admin.get("/getFollows", async (req, res) => {
           my_values: validVal,
           answer_set: user.answer_set,
         };
-        result.push(innerUser)
+        result.push(innerUser);
       }
       // console.log('result : ', result )
-      return result
+      return result;
     }
     // console.log('final : ', final )
-    
-    
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
@@ -178,12 +180,12 @@ admin.get("/getFollowers", async (req, res) => {
     // follow
     let followUsers = await Users.findOne(req.query);
     let followers = followUsers.follower;
-    getfollow().then(function(results){
+    getfollow().then(function (results) {
       // access results here by chaining to the returned promise
       res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: results } });
-  });
+    });
     async function getfollow() {
-      let result = []
+      let result = [];
       for (let i = 0; followers.length > i; i++) {
         let strId = followers[i].valueOf();
         console.log("strId : ", strId);
@@ -199,14 +201,12 @@ admin.get("/getFollowers", async (req, res) => {
           post: user.post,
           agit: user.agit,
         };
-        result.push(innerUser)
+        result.push(innerUser);
       }
       // console.log('result : ', result )
-      return result
+      return result;
     }
     // console.log('final : ', final )
-    
-    
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
@@ -222,7 +222,7 @@ admin.post("/updateBasicInfo", async (req, res) => {
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
     let updateUser = await Users.findOneAndUpdate(
       { _id: user_info._id },
-      { $set: {basic_info: qry.option} }
+      { $set: { basic_info: qry.option } }
     );
     let user = await Users.findOne({ _id: user_info._id });
     let myInfo = {
@@ -258,7 +258,7 @@ admin.post("/updateMyValues", async (req, res) => {
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
     let updateUser = await Users.findOneAndUpdate(
       { _id: user_info._id },
-      { $set: {my_values: qry.option, answer_set:qry.answer} }
+      { $set: { my_values: qry.option, answer_set: qry.answer } }
     );
     let user = await Users.findOne({ _id: user_info._id });
     let myInfo = {
