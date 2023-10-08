@@ -127,7 +127,7 @@ admin.post("/setFollow", async (req, res) => {
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
-// getFollows
+
 admin.get("/getFollows", async (req, res) => {
   try {
     // follow
@@ -144,6 +144,8 @@ admin.get("/getFollows", async (req, res) => {
         console.log("strId : ", strId);
         let user = await Users.findOne({ _id: strId });
         // console.log('user : ', user)
+        let rawVal = user.my_values
+        let validVal = rawVal.filter(item=>item!=null)
         let innerUser = {
           _id: user._id,
           nickname: user.nickname,
@@ -153,6 +155,9 @@ admin.get("/getFollows", async (req, res) => {
           job: user.job,
           post: user.post,
           agit: user.agit,
+          basic_info: user.basic_info,
+          my_values: validVal,
+          answer_set: user.answer_set,
         };
         result.push(innerUser)
       }
@@ -253,7 +258,7 @@ admin.post("/updateMyValues", async (req, res) => {
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
     let updateUser = await Users.findOneAndUpdate(
       { _id: user_info._id },
-      { $set: {my_values: qry.option} }
+      { $set: {my_values: qry.option, answer_set:qry.answer} }
     );
     let user = await Users.findOne({ _id: user_info._id });
     let myInfo = {
