@@ -107,17 +107,22 @@ post.post("/createContent", async (req, res) => {
         { _id: qry.parent_id },
         { $push: { post: savePost._id } }
       );
+      let rawVal = updatedUser.my_values;
+      let validVal = rawVal.filter((item) => item != null);
+
       let userInfo = {
         _id: updatedUser._id,
-        user_name: updatedUser.name,
         nickname: updatedUser.nickname,
-        email: updatedUser.email,
+        year: updatedUser.year,
         user_img: updatedUser.user_img,
         simple_msg: updatedUser.simple_msg,
         job: updatedUser.job,
         post: updatedUser.post,
         balance: updatedUser.balance,
         agit: updatedUser.agit,
+        basic_info: updatedUser.basic_info,
+        my_values: validVal,
+        answer_set: updatedUser.answer_set,
       };
       res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: userInfo } });
     }
