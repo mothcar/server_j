@@ -121,11 +121,36 @@ admin.post("/setFollow", async (req, res) => {
       { _id: userId },
       { $push: { follow: req.body.option.follow } }
     );
-    let userInfo = await Users.findOneAndUpdate(
+     await Users.findOneAndUpdate(
       { _id: req.body.option.userId },
       { $push: { follower: userId } }
     );
-    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: userInfo } });
+
+    let user = await Users.findOne({ _id: userId });
+
+    let rawVal = user.my_values;
+    let validVal = rawVal.filter((item) => item != null);
+    
+    let returnParam = {
+      _id: user._id,
+      user_name: user.name,
+      nickname: user.nickname,
+      gender: user.gender,
+      year: user.year,
+      email: user.email,
+      user_img: user.user_img,
+      simple_msg: user.simple_msg,
+      job: user.job,
+      post: user.post,
+      balance: user.balance,
+      basic_info: user.basic_info,
+      agit: user.agit,
+      follow: user.follow,
+      follower: user.follower,
+      answer_set: user.answer_set,
+    };
+
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: returnParam } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
@@ -241,6 +266,7 @@ admin.post("/updateBasicInfo", async (req, res) => {
       agit: user.agit,
       follow: user.follow,
       follower: user.follower,
+      answer_set: user.answer_set,
     };
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
   } catch (err) {
