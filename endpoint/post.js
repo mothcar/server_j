@@ -224,6 +224,19 @@ post.post("/createQuest", async (req, res) => {
   }
 });
 
+// getQuest
+post.get("/getQuest", async (req, res) => {
+  // log("getQuest req.query :", req.query);
+  try {
+    let qry = req.query;
+    const quests = await Quest.find();
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: quests } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 
 post.post("/removeStory", async (req, res) => {
   log("removeStory req.body :", req.body);
