@@ -11,6 +11,7 @@ const { Blob } = require("buffer");
 const tms = require("../helper/tms");
 const getBankUrl = BANK_URL + "/ledger/findUserRecord";
 const postBankUrl = BANK_URL + "/ledger/insertRecord";
+const common = require("../helper/common");
 
 var dotenv = require("dotenv");
 // const multiPlace = require("../model/multiPlace.js");
@@ -108,24 +109,10 @@ admin.get("/getMinimumUserInfo", async (req, res) => {
     //   introduction: user.introduction,
     //   balance: userLastBalance,
     // }
-    let rawVal = user.my_values;
-    let validVal = rawVal.filter((item) => item != null);
     
-    let returnParam = {
-      _id: user._id,
-      nickname: user.nickname,
-      year: user.year,
-      user_img: user.user_img,
-      simple_msg: user.simple_msg,
-      job: user.job,
-      post: user.post,
-      agit: user.agit,
-      basic_info: user.basic_info,
-      my_values: validVal,
-      answer_set: user.answer_set,
-    };
+    let myInfo = common.setMyParams(user)
 
-    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: returnParam } });
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
@@ -140,7 +127,7 @@ admin.post("/setFollow", async (req, res) => {
     console.log("User Info by Token : ", user_info);
     let userId = user_info._id;
     // follow
-    let myInfo = await Users.findOneAndUpdate(
+    await Users.findOneAndUpdate(
       { _id: userId },
       { $push: { follow: req.body.option.follow } }
     );
@@ -151,29 +138,9 @@ admin.post("/setFollow", async (req, res) => {
 
     let user = await Users.findOne({ _id: userId });
 
-    let rawVal = user.my_values;
-    let validVal = rawVal.filter((item) => item != null);
-    
-    let returnParam = {
-      _id: user._id,
-      user_name: user.name,
-      nickname: user.nickname,
-      gender: user.gender,
-      year: user.year,
-      email: user.email,
-      user_img: user.user_img,
-      simple_msg: user.simple_msg,
-      job: user.job,
-      post: user.post,
-      balance: user.balance,
-      basic_info: user.basic_info,
-      agit: user.agit,
-      follow: user.follow,
-      follower: user.follower,
-      answer_set: user.answer_set,
-    };
+    let myInfo = common.setMyParams(user)
 
-    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: returnParam } });
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
@@ -196,22 +163,9 @@ admin.get("/getFollows", async (req, res) => {
         console.log("strId : ", strId);
         let user = await Users.findOne({ _id: strId });
         // console.log('user : ', user)
-        let rawVal = user.my_values;
-        let validVal = rawVal.filter((item) => item != null);
-        let innerUser = {
-          _id: user._id,
-          nickname: user.nickname,
-          year: user.year,
-          user_img: user.user_img,
-          simple_msg: user.simple_msg,
-          job: user.job,
-          post: user.post,
-          agit: user.agit,
-          basic_info: user.basic_info,
-          my_values: validVal,
-          answer_set: user.answer_set,
-        };
-        result.push(innerUser);
+
+        let myInfo = common.setMyParams(user)
+        result.push(myInfo);
       }
       // console.log('result : ', result )
       return result;
@@ -273,24 +227,8 @@ admin.post("/updateBasicInfo", async (req, res) => {
       { $set: { basic_info: qry.option } }
     );
     let user = await Users.findOne({ _id: user_info._id });
-    let myInfo = {
-      _id: user._id,
-      user_name: user.name,
-      nickname: user.nickname,
-      gender: user.gender,
-      year: user.year,
-      email: user.email,
-      user_img: user.user_img,
-      simple_msg: user.simple_msg,
-      job: user.job,
-      post: user.post,
-      balance: user.balance,
-      basic_info: user.basic_info,
-      agit: user.agit,
-      follow: user.follow,
-      follower: user.follower,
-      answer_set: user.answer_set,
-    };
+    let myInfo = common.setMyParams(user);
+    
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
   } catch (err) {
     log("err=", err);
@@ -310,24 +248,8 @@ admin.post("/updateMyValues", async (req, res) => {
       { $set: { my_values: qry.option, answer_set: qry.answer } }
     );
     let user = await Users.findOne({ _id: user_info._id });
-    let myInfo = {
-      _id: user._id,
-      user_name: user.name,
-      nickname: user.nickname,
-      gender: user.gender,
-      year: user.year,
-      email: user.email,
-      user_img: user.user_img,
-      simple_msg: user.simple_msg,
-      job: user.job,
-      post: user.post,
-      balance: user.balance,
-      basic_info: user.basic_info,
-      my_values: user.my_values,
-      agit: user.agit,
-      follow: user.follow,
-      follower: user.follower,
-    };
+    let myInfo = common.setMyParams(user);
+    
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
   } catch (err) {
     log("err=", err);

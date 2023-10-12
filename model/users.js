@@ -20,6 +20,7 @@ const initSchema = async ()=>{
     user_img:         {type:Array, default:[]},         // user image 
     simple_msg:       [{type:mongoose.Schema.Types.ObjectId, ref:'simpleMsg'}], // 방문자가 남긴 메세지 
     job:              {type:String, default:''},        // 직업
+    quests_id:        {type:Array, default:[]},         // 퀘스트 리스트
     follow:           [{type:mongoose.Schema.Types.ObjectId, ref:'users'}],
     follower:         [{type:mongoose.Schema.Types.ObjectId, ref:'users'}],
     favorite:         {type:Array, default:[]},         // 즐겨찾기 

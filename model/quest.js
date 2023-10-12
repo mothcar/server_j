@@ -28,6 +28,7 @@ let initSchema = async ()=>{
     reward:        {type:Number, default:0},                           // 보상금액
     reply:         [{type:mongoose.Schema.Types.ObjectId, ref:'reply'}],// 댓글
     like:          {type:Number, default:0},                           // 인기 
+    valid:         {type:Boolean, default:true},                       // 유효
 
     
   }, {timestamps: true, minimize: false})

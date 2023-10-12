@@ -238,25 +238,8 @@ auth.post("/login", async (req, res) => {
 
     await Users.updateOne({ _id: user._id }, { loginType: LOGIN_CODE.EMAIL });
     // console.log("User info : ", user);
-    let myInfo = {
-      _id: user._id,
-      user_name: user.name,
-      nickname: user.nickname,
-      gender: user.gender,
-      year: user.year,
-      email: user.email,
-      user_img: user.user_img,
-      simple_msg: user.simple_msg,
-      job: user.job,
-      post: user.post,
-      balance: user.balance,
-      basic_info: user.basic_info,
-      my_values: user.my_values,
-      agit: user.agit,
-      follow: user.follow,
-      follower: user.follower,
-    };
-    console.log("User Info Params : ", myInfo);
+    let myInfo = common.setMyParams(user);
+    // console.log("User Info Params : ", myInfo);
 
     return res.json({
       msg: RCODE.OPERATION_SUCCEED,
