@@ -99,11 +99,11 @@ post.post("/createContent", async (req, res) => {
         balance: bal + common.reward,
       };
       let records = await Ledger.create(rewardParams);
-      let updatedUser = await Users.findOneAndUpdate(
+      await Users.findOneAndUpdate(
         { _id: user_id },
         { $set: { balance: records.balance } }
       );
-      let user = await Users.findOneAndUpdate({ _id: user_id });
+      let user = await Users.findOne({ _id: user_id });
       await Place.findOneAndUpdate(
         { _id: qry.parent_id },
         { $push: { post: savePost._id } }
@@ -170,14 +170,14 @@ post.post("/answerQuest", async (req, res) => {
         balance: bal + common.reward,
       };
       let records = await Ledger.create(rewardParams);
-      let updatedUser = await Users.findOneAndUpdate(
+      await Users.findOneAndUpdate(
         { _id: user_id },
         {
           $set: { balance: records.balance },
           $push: { quests_id: qry.questId },
         }
       );
-      let user = await Users.findOneAndUpdate({ _id: user_id });
+      let user = await Users.findOne({ _id: user_id });
       await Place.findOneAndUpdate(
         { _id: qry.parent_id },
         { $push: { post: savePost._id } }
@@ -258,7 +258,7 @@ post.post("/createQuest", async (req, res) => {
         { _id: user_id },
         { $set: { balance: records.balance } }
       );
-      let user = await Users.findOneAndUpdate({ _id: user_id });
+      let user = await Users.findOne({ _id: user_id });
       // let updatedPlace = await Place.findOneAndUpdate(
       //   { _id: qry.parent_id },
       //   { $push: { post: saveQuest._id } }

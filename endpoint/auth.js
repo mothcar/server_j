@@ -205,9 +205,7 @@ auth.post("/login", async (req, res) => {
     let email = req.body.email.toLowerCase();
     let password = req.body.password;
 
-    let user = await Users.findOne({ email: email }, { __v: 0 }).populate(
-      "job"
-    );
+    let user = await Users.findOne({ email: email }, { __v: 0 });
     if (!user)
       return res.json({ msg: RCODE.INVALID_USER_INFO, data: { item: null } });
 
