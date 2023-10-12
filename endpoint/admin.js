@@ -35,6 +35,29 @@ admin.get("/checkAdmin", async (req, res) => {
   }
 });
 
+admin.get("/checkManager", async (req, res) => {
+  try {
+    const accessKey = req.query.accessKey;
+    var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    // console.log('User Info by Token : ', user_info)
+    const managers = await Users.find({role:'MANAGER'})
+    
+    let result =  false
+    if (managers.some(e => e._id.valueOf() === user_info._id)) {
+      result = true
+    } 
+    if(user_info.email === 'mothcar@naver.com') result = true
+
+    if (result) {
+      return res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: true } });
+    } else
+      return res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: false } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 admin.get("/checkMe", async (req, res) => {
   try {
     const accessKey = req.query.accessKey;

@@ -12,7 +12,7 @@ const initSchema = async ()=>{
     birth:            {type:String, default:''},        // 생월일 
     married:          {type:String, default:''},        // 결혼상태 
     password:         {type:String},                    // 로그인 암호
-    role:             {type:String, default:'USER'},    // 'ADMIN, OPERATOR, USER', 'POLITICS ADMINIST 행정관리자 명칭들'
+    role:             {type:String, default:'USER'},    // 'ADMIN, MANAGER, USER', 
     address:          {type:String, default:'대한민국'},  // 행정주소
     phone:            {type:String, default:'010-0000-0000'},  // 휴대폰번호
     enabled:          {type:Boolean},                   // 사용여부

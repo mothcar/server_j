@@ -132,10 +132,99 @@ post.post("/createContent", async (req, res) => {
   }
 });
 
-// removeStory
-/*
+// createQuest
+post.post("/createQuest", async (req, res) => {
+  log("createQuest req.body :", req.body);
 
-*/
+  try {
+    let qry = req.body;
+
+    const accessKey = qry.accessKey;
+    var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    var user_id = user_info._id;
+
+    let imageParce = JSON.parse(qry.images);
+    let youtubePhoto = qry.youtubePhoto;
+
+    if (imageParce.length > 0) {
+      youtubePhoto = imageParce[0];
+    }
+
+    const saveParams = {
+      user_id: user_id,
+      post_type: qry.type,
+      area: qry.area,
+      og_title: qry.title,
+      comment: qry.comment,
+      images: imageParce,
+      photo: youtubePhoto,
+      youtube_url: qry.youtubeURL,
+      parent_id: qry.parent_id,
+      admin_address: qry.address,
+      r_depth_1: qry.region1depth,
+      r_depth_2: qry.region2depth,
+      r_depth_3: qry.region3depth,
+      location: {
+        type: "Point",
+        coordinates: [Number(req.body.lng), Number(req.body.lat)],
+      },
+    };
+    const saveQuest = await Quest.create(saveParams);
+
+    let time_obj = common.getToday();
+
+    if (saveQuest) {
+      let bal = 0;
+      let lastRecord = await Ledger.find({ user: user_id })
+        .sort({ createdAt: -1 })
+        .limit(1);
+      console.log("User Record : ", lastRecord);
+      if (lastRecord.length > 0) bal = lastRecord[0].balance;
+      console.log("Error Check : ", bal);
+      let rewardParams = {
+        user: user_id,
+        trans_date: time_obj.date,
+        trans_time: time_obj.time,
+        description: "퀘스트쓰기 보상",
+        type: "GET",
+        amount: common.reward,
+        balance: bal + common.reward,
+      };
+      let records = await Ledger.create(rewardParams);
+      let updatedUser = await Users.findOneAndUpdate(
+        { _id: user_id },
+        { $set: { balance: records.balance } }
+      );
+      // let updatedPlace = await Place.findOneAndUpdate(
+      //   { _id: qry.parent_id },
+      //   { $push: { post: saveQuest._id } }
+      // );
+      let rawVal = updatedUser.my_values;
+      let validVal = rawVal.filter((item) => item != null);
+
+      let userInfo = {
+        _id: updatedUser._id,
+        nickname: updatedUser.nickname,
+        year: updatedUser.year,
+        user_img: updatedUser.user_img,
+        simple_msg: updatedUser.simple_msg,
+        job: updatedUser.job,
+        post: updatedUser.post,
+        balance: updatedUser.balance,
+        agit: updatedUser.agit,
+        basic_info: updatedUser.basic_info,
+        my_values: validVal,
+        answer_set: updatedUser.answer_set,
+      };
+      res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: userInfo } });
+    }
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
+
 post.post("/removeStory", async (req, res) => {
   log("removeStory req.body :", req.body);
   try {

@@ -27,6 +27,7 @@ const initMongo = async ()=>{
     await require('../model/multiPlace')
     await require('../model/outdoor')
     await require('../model/post')
+    await require('../model/quest')
     await require('../model/ledger')
     await require('../model/simpleMsg')
     await require('../model/reply')
