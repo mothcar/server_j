@@ -12,6 +12,22 @@ const policy = require("../helper/sharing_policy.js");
 //--------------------------------------------------
 
 //
+managedb.post("/updateRole", async (req, res) => {
+  log("qry :", req.body);
+
+  try {
+    const qry = req.body;
+    console.log('Connected To Server.................... ')
+    const user = await Users.findOneAndUpdate({email:qry.email}, {$set:{role:qry.role}}) 
+    res.status(200).json({ msg: RCODE.OPERATION_SUCCEED, data: { item: user } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+//  From Upper J-Diary **********************************************
+//  *****************************************************************
+
 managedb.post("/deleteAllSimpleMsg", async (req, res) => {
   log("qry :", req.body);
 
