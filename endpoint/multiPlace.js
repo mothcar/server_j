@@ -127,37 +127,6 @@ multiPlace.post("/editPosition", async (req, res) => {
   }
 });
 
-// editImage
-multiPlace.post("/editImage", async (req, res) => {
-  try {
-    var qry = req.body;
-    console.log('Qry editImage : ', qry)
-    let place 
-    if(qry.place_type == 'MULTI') {
-      let changed = await MultiPlace.findOneAndUpdate({_id:qry._id},{$push:{image:qry.image}})
-      console.log('Place changed : ', changed)
-      place = await MultiPlace.findOne({_id:qry._id})
-    } else if(qry.place_type == 'PLACE' || qry.place_type == 'BUILDING') {
-      let changed = await Place.findOneAndUpdate({_id:qry._id},{$push:{image:qry.image}})
-      // console.log('Place changed : ', changed)
-      place = await Place.findOne({_id:qry._id})
-    } else if(qry.place_type == 'PUBLIC') {
-      let changed = await PublicPlace.findOneAndUpdate({_id:qry._id},{$push:{image:qry.image}})
-      // console.log('Place changed : ', changed)
-      place = await PublicPlace.findOne({_id:qry._id})
-    } else if(qry.place_type == 'INNER') {
-      let changed = await Facility.findOneAndUpdate({_id:qry._id},{$push:{image:qry.image}})
-      // console.log('Place changed : ', changed)
-      place = await Facility.findOne({_id:qry._id})
-    }
-    // console.log('Place : ', place)
-    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
-  } catch (err) {
-    log("err=", err);
-    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
-  }
-});
-
 // deleteById
 multiPlace.post("/deleteById", async (req, res) => {
   try {

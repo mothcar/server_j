@@ -480,6 +480,22 @@ place.get("/getPlace", async (req, res) => {
   }
 });
 
+place.post("/editImage", async (req, res) => {
+  try {
+    var qry = req.body;
+    console.log('Qry editImage : ', qry)
+    let place 
+    await Place.findOneAndUpdate({_id:qry._id},{$push:{image:qry.image}})
+    // console.log('Place changed : ', changed)
+    place = await Place.findOne({_id:qry._id})
+    // console.log('Place : ', place)
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 // editPlaceName
 place.post("/editPlaceName", async (req, res) => {
   try {
