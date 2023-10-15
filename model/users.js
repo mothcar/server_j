@@ -26,7 +26,7 @@ const initSchema = async ()=>{
     favorite:         {type:Array, default:[]},         // 즐겨찾기 
     introduction:     {type:String, default:''},        // 소개
     basic_info:       {type:Object, default:{height:{value:[],price:500},weight:{value:[],price:500},blood_type:{value:[],price:500}}}, // 기본정보
-    my_values:        {type:Array, default:[]},         // 나의 가치관
+    my_values:        {type:Object, default:{}},         // 나의 가치관
     answer_set:       {type:Array, default:[]},         // 보여주기 답
     hidePerson:       {type:Array, default:[]},         // 지인
     balance:          {type:Number, default: 0 },       // 잔액 

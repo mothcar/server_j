@@ -63,11 +63,11 @@ common.getJwtToken = (access_token) => {
 common.signUpReward = 1000;
 common.reward = 1000;
 common.setMyParams = function (user) {
-  let validVal = []
-  if (user.my_values) {
-    let rawVal = user.my_values;
-    validVal = rawVal.filter((item) => item != null);
-  }
+  // let validVal = []
+  // if (user.my_values) {
+  //   let rawVal = user.my_values;
+  //   validVal = rawVal.filter((item) => item != null);
+  // }
 
   let params = {
     _id: user._id,
@@ -80,7 +80,7 @@ common.setMyParams = function (user) {
     balance: user.balance,
     agit: user.agit,
     basic_info: user.basic_info,
-    my_values: validVal,
+    my_values: user.my_values,
     answer_set: user.answer_set,
     quests_id: user.quests_id,
   };

@@ -257,6 +257,27 @@ admin.post("/updateMyValues", async (req, res) => {
   }
 });
 
+admin.post("/updateMyNewValues", async (req, res) => {
+  try {
+    log("editProfile :", req.body);
+    const qry = req.body;
+    const accessKey = qry.accessKey;
+    var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    let updateUser = await Users.findOneAndUpdate(
+      { _id: user_info._id },
+      { $set: { my_values: qry.option} }
+    );
+    let user = await Users.findOne({ _id: user_info._id });
+    let myInfo = common.setMyParams(user);
+    console.log('My Info : ', myInfo)
+    
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 //
 admin.post("/editProfile", async (req, res) => {
   try {
