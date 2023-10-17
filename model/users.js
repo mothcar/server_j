@@ -7,14 +7,14 @@ const initSchema = async ()=>{
     email:            {type:String, unique:true},       // 이메일
     gender:           {type:String, default:''},        // M / W
     name:             {type:String, default:''},        // 사용자 이름
-    nickname:         {type:String, default:''},        // 닉네임 
+    nickname:         {type:String, default:'', unique:true},        // 닉네임 
     year:             {type:Number, default:1961},      // 생년 
     birth:            {type:String, default:''},        // 생월일 
     married:          {type:String, default:''},        // 결혼상태 
     password:         {type:String},                    // 로그인 암호
     role:             {type:String, default:'USER'},    // 'ADMIN, MANAGER, USER', 
     address:          {type:String, default:'대한민국'},  // 행정주소
-    phone:            {type:String, default:'010-0000-0000'},  // 휴대폰번호
+    phone:            {type:String, default:'010-0000-0000', unique:true},  // 휴대폰번호
     enabled:          {type:Boolean},                   // 사용여부
     isVerifiedEmail:  {type:Boolean, default:true},     // 이메일 확인 여부
     user_img:         {type:Array, default:[]},         // user image 
