@@ -216,7 +216,7 @@ auth.post("/login", async (req, res) => {
       });
 
     let ret = await bcrypt.compare(password, user.password);
-    if (!ret) return res.json({ msg: RCODE.INVALID_USER_INFO, data: {} });
+    if (!ret) return res.json({ msg: RCODE.INVALID_USER_INFO, data: {item: 'NOPW'} });
 
     user.password = undefined;
 
