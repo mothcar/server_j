@@ -5,7 +5,7 @@ const express = require("express");
 const xlsx = require("xlsx");
 const reply = express.Router({});
 const dateFormat = require("dateformat");
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require("mongodb");
 const tms = require("../helper/tms");
 
 //--------------------------------------------------
@@ -47,24 +47,23 @@ reply.post("/createReply", async (req, res) => {
     // console.log('Qry : ', qry)
     const accessKey = req.body.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    console.log('TMS user_info : ', user_info)
     var user_id = user_info._id;
 
     let params = {
-      user_id: new ObjectId(user_id),
+      user_id: user_id,
+      nickname: user_info.nickname,
+      user_img: user_info.user_img,
       parent_id: qry.parent_id,
       comment: qry.comment,
-      place_type: qry.place_type,
-    }
-    
+    };
+
     let reply = await Reply.create(params);
-    if(qry.place_type == "PUBLIC") {
-      await Notice.findOneAndUpdate({_id:qry.parent_id}, {$push:{reply: new ObjectId(reply._id)}})
-      let notice = await Notice.findOne({_id:qry.parent_id}).populate('reply')
-      return res.status(200).json({ msg: RCODE.OPERATION_SUCCEED, data: { item: notice } });
-    }
-    await Post.findOneAndUpdate({_id:qry.parent_id}, {$push:{reply: new ObjectId(reply._id)}})
-    let story = await Post.findOne({_id:qry.parent_id}).populate('reply')
-    res.status(200).json({ msg: RCODE.OPERATION_SUCCEED, data: { item: story } });
+    await Post.findOneAndUpdate( { _id: qry.parent_id }, { $push: { reply: reply._id} } );
+    let story = await Post.findOne({ _id: qry.parent_id }).populate("reply");
+    res
+      .status(200)
+      .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: story } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });

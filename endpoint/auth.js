@@ -223,6 +223,8 @@ auth.post("/login", async (req, res) => {
     let payload = {
       _id: user._id,
       email: user.email,
+      nickname: user.nickname,
+      user_img: user.user_img.at(-1),
       loginType: LOGIN_CODE.EMAIL,
       role: user.role,
     };

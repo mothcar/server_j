@@ -26,7 +26,7 @@ let initSchema = async ()=>{
     tags:          {type:Array, default: []},                          // 관련 키워드
     hits:          {type:Number, default: 0},                          // 조회
     reward:        {type:Number, default:0},                           // 보상금액
-    reply:         [{type:mongoose.Schema.Types.ObjectId, ref:'reply'}],// 댓글
+    reply:         [{type:mongoose.Schema.Types.ObjectId, ref:'reply', autopopulate: true}],// 댓글
     like:          {type:Number, default:0},                           // 인기 
 
     
@@ -35,8 +35,11 @@ let initSchema = async ()=>{
   try{
     const list = await mongoose.connection.db.listCollections().toArray()
     let index = _.findIndex(list, {name:'post'})
-    if(index < 0)
-    post.index({place_type:1,user_id:1})
+    if(index < 0) {
+      post.index({place_type:1,user_id:1})
+      post.plugin(require('mongoose-autopopulate'))
+    }
+    
     else
       log('init schema (voices.products): collection found. creation skipped')
 
