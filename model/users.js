@@ -28,7 +28,8 @@ const initSchema = async ()=>{
     basic_info:       {type:Object, default:{height:{value:[],price:500},weight:{value:[],price:500},blood_type:{value:[],price:500}}}, // 기본정보
     my_values:        {type:Object, default:{}},         // 나의 가치관
     answer_set:       {type:Array, default:[]},         // 보여주기 답
-    hidePerson:       {type:Array, default:[]},         // 지인
+    blind_list:       {type:Array, default:[]},         // 지인리스트
+    blind_ids:        {type:Array, default:[]},         // 지인ID
     balance:          {type:Number, default: 0 },       // 잔액 
     agit:             { type: mongoose.Schema.Types.ObjectId, ref: "place", autopopulate: true }, // agit
 

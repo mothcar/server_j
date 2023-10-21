@@ -81,6 +81,8 @@ common.setMyParams = function (user) {
     agit: user.agit,
     basic_info: user.basic_info,
     my_values: user.my_values,
+    blind_list: user.blind_list,
+    blind_ids: user.blind_ids,
     answer_set: user.answer_set,
     quests_id: user.quests_id,
   };

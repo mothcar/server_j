@@ -63,7 +63,7 @@ admin.get("/checkMe", async (req, res) => {
   try {
     const accessKey = req.query.accessKey;
     let user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
-    console.log("User Info by Token : ", user_info);
+    // console.log("User Info by Token : ", user_info);
     let userId = user_info._id;
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: userId } });
   } catch (err) {
@@ -124,7 +124,7 @@ admin.post("/setFollow", async (req, res) => {
   try {
     const accessKey = req.body.accessKey;
     let user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
-    console.log("User Info by Token : ", user_info);
+    // console.log("User Info by Token : ", user_info);
     let userId = user_info._id;
     // follow
     await Users.findOneAndUpdate(
@@ -160,7 +160,7 @@ admin.get("/getFollows", async (req, res) => {
       let result = [];
       for (let i = 0; follows.length > i; i++) {
         let strId = follows[i].valueOf();
-        console.log("strId : ", strId);
+        // console.log("strId : ", strId);
         let user = await Users.findOne({ _id: strId });
         // console.log('user : ', user)
 
@@ -190,7 +190,7 @@ admin.get("/getFollowers", async (req, res) => {
       let result = [];
       for (let i = 0; followers.length > i; i++) {
         let strId = followers[i].valueOf();
-        console.log("strId : ", strId);
+        // console.log("strId : ", strId);
         let user = await Users.findOne({ _id: strId });
         // console.log('user : ', user)
         let innerUser = {
@@ -269,7 +269,7 @@ admin.post("/updateMyNewValues", async (req, res) => {
     );
     let user = await Users.findOne({ _id: user_info._id });
     let myInfo = common.setMyParams(user);
-    console.log('My Info : ', myInfo)
+    // console.log('My Info : ', myInfo)
     
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
   } catch (err) {
@@ -298,7 +298,7 @@ admin.post("/editProfile", async (req, res) => {
     // 은행정보 가져오기 **************************************************
     let getLatest = await axios.get(getBankUrl, { params: qs });
     let userLastBalance = 0;
-    console.log("Get Latest : ", getLatest.data.data.item);
+    // console.log("Get Latest : ", getLatest.data.data.item);
     userLastBalance = getLatest.data.data.item.balance;
 
     let returnParam = {
@@ -326,7 +326,7 @@ admin.post("/editProfile", async (req, res) => {
 });
 
 admin.get("/getImage", async (req, res) => {
-  console.log("Get image params : ", req.query);
+  // console.log("Get image params : ", req.query);
   try {
     let getUser = await Users.findOne(req.query);
     let image;
@@ -341,13 +341,55 @@ admin.get("/getImage", async (req, res) => {
       image: image,
     };
 
-    console.log("User Image : ", image);
+    // console.log("User Image : ", image);
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: sendParams } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
+
+// registerBlind
+admin.post("/registerBlind", async (req, res) => {
+  try {
+    log("editProfile :", req.body);
+    const qry = req.body;
+    const accessKey = qry.accessKey;
+    var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    let user = await Users.findOne({ _id: user_info._id });
+    const oldList = user.blind_list
+
+    const condition = qry.option
+    //일단 이름과 전화번호로 검색
+    const duplicate = oldList.find(item=>item.name === condition.name&&item.phone===condition.phone)
+    // console.log('Find list : ', duplicate)
+    if(duplicate) {
+      let myInfo = common.setMyParams(user);
+      return res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
+    } 
+    await Users.findOneAndUpdate( { _id: user_info._id }, { $push: { blind_list: qry.option} } );
+    // 한꺼번에 여러조건으로 찾기 
+    // 찾아서 있으면 blind_id에 추가 
+    /*
+    const 
+    
+    */ 
+    let isBlind = await Users.findOne({ $or: [{name:condition.name},{phone:condition.phone},{email:condition.email}]})
+    // console.log('isBlind : ', isBlind)
+    if(isBlind) {
+      await Users.findOneAndUpdate( { _id: user_info._id }, { $push: { blind_ids: isBlind._id} } );
+    }
+    user = await Users.findOne({ _id: user_info._id });
+    let myInfo = common.setMyParams(user);
+    // console.log('My Info : ', myInfo)
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
+// Old API ***************************************************
 
 admin.post("/updateUserImage", async (req, res) => {
   try {
@@ -365,7 +407,7 @@ admin.post("/updateUserImage", async (req, res) => {
 
     let getLatest = await axios.get(getBankUrl, { params: qs });
     let userLastBalance = 0;
-    console.log("Get Latest : ", getLatest.data.data.item);
+    // console.log("Get Latest : ", getLatest.data.data.item);
     userLastBalance = getLatest.data.data.item.balance;
 
     let user = await Users.findOne({ _id: qry._id });
@@ -397,7 +439,7 @@ admin.get("/checkExpire", async (req, res) => {
   try {
     const accessKey = req.query.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
-    console.log("User Info by Token : ", user_info);
+    // console.log("User Info by Token : ", user_info);
     if (user_info.iat >= user_info.exp)
       return res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: false } });
     if (user_info)
