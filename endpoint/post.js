@@ -313,6 +313,7 @@ post.get("/getOnePost", async (req, res) => {
   log("name req.query :", req.query);
   try {
     let qry = req.query;
+    await Post.findOneAndUpdate({ _id: qry.id },{ $inc: { hits: 1 } });
     const post = await Post.findOne({ _id: qry.id });
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
   } catch (err) {
