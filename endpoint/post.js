@@ -322,6 +322,22 @@ post.get("/getOnePost", async (req, res) => {
   }
 });
 
+post.post("/addLike", async (req, res) => {
+  log("removeStory req.body :", req.body);
+  try {
+    let qry = req.body;
+
+    // place id : 651ab8ea26808370f63596e3
+    await Post.findOneAndUpdate({ _id: qry.id },{$inc:{like:qry.like}});
+    const post = await Post.findOne({ _id: qry.id });
+    
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 post.get("/getPosts", async (req, res) => {
   // log("getPosts req.query :", req.query);
   try {
