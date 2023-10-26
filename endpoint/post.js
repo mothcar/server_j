@@ -309,6 +309,23 @@ post.post("/removeStory", async (req, res) => {
   }
 });
 
+post.post("/eidtPost", async (req, res) => {
+  log("eidtPost req.body :", req.body);
+  try {
+    let qry = req.body;
+    const accessKey = qry.accessKey;
+    var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    var user_id = user_info._id;
+
+    await Post.findOneAndUpdate({ _id: qry.id },{$set: {og_title: qry.og_title, comment: qry.comment}});
+    const post = await Post.findOne({ _id: qry.id });
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 post.get("/getOnePost", async (req, res) => {
   log("name req.query :", req.query);
   try {
