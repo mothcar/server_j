@@ -85,6 +85,7 @@ common.setMyParams = function (user) {
     blind_ids: user.blind_ids,
     answer_set: user.answer_set,
     quests_id: user.quests_id,
+    introduction: user.introduction,
   };
   return params;
 };
