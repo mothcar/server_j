@@ -407,6 +407,44 @@ post.get("/getPosts", async (req, res) => {
   }
 }); // getPosts
 
+// 
+post.get("/getLocalPosts", async (req, res) => {
+  log("getLocalPosts req.query :", req.query);
+  try {
+    let qry = req.query;
+
+    // $ne: r_depth_1
+    var posts = await Post.find({r_depth_2: {$ne: qry.r_depth_2} })
+      .sort({ createdAt: -1 })
+      .limit(5); // 15
+    // posts = _.uniqBy(posts, "admin_address");
+    // console.log('getPosts return : ', posts)
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+}); // getLocalPosts
+
+// 
+post.get("/getCatePosts", async (req, res) => {
+  log("getLocalPosts req.query :", req.query);
+  try {
+    let qry = req.query;
+
+    // $ne: r_depth_1
+    var posts = await Post.find({r_depth_1: qry.r_depth_1, post_type: qry.post_type})
+      .sort({ createdAt: -1 })
+      .limit(5); // 15
+    // posts = _.uniqBy(posts, "admin_address");
+    // console.log('getPosts return : ', posts)
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+}); // getCatePosts
+
 //--------------------------------------------------
 // New functions 2022
 //--------------------------------------------------
