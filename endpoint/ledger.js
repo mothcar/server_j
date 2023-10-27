@@ -26,14 +26,14 @@ ledger.get('/getRecord', async (req, res) => {
 
 
 // Find user Record 
-ledger.get('/findUserRecord', async (req, res) => {
+ledger.get('/getUserRecord', async (req, res) => {
   let qry = req.query
   console.log('Bank find user...')
   console.log('Bank req.query', qry)
   
   let params = {
-    service_name: qry.service_name,
-    user_id : qry.user_id
+    // service_name: qry.service_name,
+    user : qry.userId
   } 
   try {
     let records = await Ledger.find(params)
