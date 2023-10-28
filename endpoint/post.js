@@ -474,9 +474,13 @@ post.get("/getPosts", async (req, res) => {
       }
       return acc;
     }, []);
-    // console.log('getPosts return : ', posts)
 
-    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
+    // postType = '📣 공지사항'
+    let getNotice = await Post.find({post_type:'📣 공지사항'}).sort({ createdAt: -1 }) .limit(1);
+    // console.log('getPosts return : ', posts)
+    let mixResult = getNotice.concat(posts)
+
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: mixResult } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
