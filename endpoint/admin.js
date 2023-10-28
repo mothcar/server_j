@@ -47,6 +47,7 @@ admin.get("/checkManager", async (req, res) => {
     if (managers.some(e => e._id.valueOf() === user_info._id)) {
       result = true
     } 
+    if(user_info.email === 'mothcar@gmail.com') result = true // 노무현 
     if(user_info.email === 'mothcar@naver.com') result = true
 
     if (result) {

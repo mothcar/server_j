@@ -62,6 +62,7 @@ common.getJwtToken = (access_token) => {
 
 common.signUpReward = 1000;
 common.reward = 1000;
+common.reward_notice = 10000;
 common.setMyParams = function (user) {
   // let validVal = []
   // if (user.my_values) {
