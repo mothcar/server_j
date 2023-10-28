@@ -56,14 +56,22 @@ reply.post("/createReply", async (req, res) => {
       user_img: user_info.user_img,
       parent_id: qry.parent_id,
       comment: qry.comment,
+      type: qry.type
     };
 
     let reply = await Reply.create(params);
-    await Post.findOneAndUpdate( { _id: qry.parent_id }, { $push: { reply: reply._id} } );
-    let story = await Post.findOne({ _id: qry.parent_id }).populate("reply");
+    let result
+    if(qry.type === 'STORY') {
+      await Post.findOneAndUpdate( { _id: qry.parent_id }, { $push: { reply: reply._id} } );
+      result = await Post.findOne({ _id: qry.parent_id }).populate("reply");
+    } else {
+      await Place.findOneAndUpdate( { _id: qry.parent_id }, { $push: { reply: reply._id} } );
+      result = await Place.findOne({ _id: qry.parent_id }).populate("reply");
+    }
+    
     res
       .status(200)
-      .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: story } });
+      .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: result } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });

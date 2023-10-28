@@ -18,6 +18,7 @@ let initSchema = async ()=>{
     location:       {type:Object, default:{}},                    // coords
     description:    {type:String, default:''},                    // description
     image:          {type:Array, default:[]},                     // content image
+    reply:          [{type:mongoose.Schema.Types.ObjectId, ref:'reply', autopopulate: true}],// 댓글
     owner:          {type:mongoose.Schema.Types.ObjectId, ref:'users'},    // 소유자 
     owner_img:      {type:Array, default:[]},                     // 오너 image
     member:         [{type:mongoose.Schema.Types.ObjectId, ref:'users'}],    // community member 
@@ -36,10 +37,10 @@ let initSchema = async ()=>{
   try{
     const list = await mongoose.connection.db.listCollections().toArray()
     let index = _.findIndex(list, {name:'place'})
-    if(index < 0)
-    place.index({place_name:1,description:1, location : "2dsphere" })
-    else
-      log('init schema (place): collection found. creation skipped')
+    if(index < 0) {
+      place.index({place_name:1,description:1, location : "2dsphere" })
+      place.plugin(require('mongoose-autopopulate'))
+    } else log('init schema (place): collection found. creation skipped')
 
     global.Place = mongoose.model('place', place)
     return new Promise((resolve, reject)=>{resolve('done')})
