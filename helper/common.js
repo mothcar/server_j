@@ -87,6 +87,7 @@ common.setMyParams = function (user) {
     answer_set: user.answer_set,
     quests_id: user.quests_id,
     introduction: user.introduction,
+    reply: user.reply,
   };
   return params;
 };

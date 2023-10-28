@@ -32,7 +32,7 @@ const initSchema = async ()=>{
     blind_ids:        {type:Array, default:[]},         // 지인ID
     balance:          {type:Number, default: 0 },       // 잔액 
     agit:             { type: mongoose.Schema.Types.ObjectId, ref: "place", autopopulate: true }, // agit
-
+    reply:            [{type:mongoose.Schema.Types.ObjectId, ref:'reply', autopopulate: true}],   // 댓글
     // for voice mall
     uuid:             {type:String},                    // 임시 UUID
     signedOutAt:      {type:Date, default: Date.now},   // 회원 탈퇴 일시.

@@ -2,7 +2,7 @@
 
 let initSchema = async ()=>{
   const reply = new mongoose.Schema({
-    type:          {type:String, default:'STORY'},                     // STORY, AGIT
+    type:          {type:String, default:'STORY'},                     // STORY, AGIT, USER
     parent_id:     {type:String, default:''},                          // 원래 포스트 
     nickname:      {type:String, default:''},                          // 닉네임 
     // user_id:       {type:mongoose.Schema.Types.ObjectId, ref:'users', autopopulate: true}, // 편집자

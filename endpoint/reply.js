@@ -7,6 +7,7 @@ const reply = express.Router({});
 const dateFormat = require("dateformat");
 const { ObjectId } = require("mongodb");
 const tms = require("../helper/tms");
+const common = require("../helper/common");
 
 //--------------------------------------------------
 // New functions
@@ -61,12 +62,17 @@ reply.post("/createReply", async (req, res) => {
 
     let reply = await Reply.create(params);
     let result
+    // STORY, AGIT, USER
     if(qry.type === 'STORY') {
       await Post.findOneAndUpdate( { _id: qry.parent_id }, { $push: { reply: reply._id} } );
       result = await Post.findOne({ _id: qry.parent_id }).populate("reply");
-    } else {
+    } else if(qry.type === 'AGIT') {
       await Place.findOneAndUpdate( { _id: qry.parent_id }, { $push: { reply: reply._id} } );
       result = await Place.findOne({ _id: qry.parent_id }).populate("reply");
+    } else {
+      await Users.findOneAndUpdate( { _id: qry.parent_id }, { $push: { reply: reply._id} } );
+      let user = await Users.findOne({ _id: qry.parent_id }).populate("reply");
+      result = common.setMyParams(user)
     }
     
     res
