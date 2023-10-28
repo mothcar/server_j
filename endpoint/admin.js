@@ -392,17 +392,18 @@ admin.post("/registerBlind", async (req, res) => {
   }
 });
 
-// Old API ***************************************************
-
 admin.post("/updateUserImage", async (req, res) => {
   try {
     log("updateUserImage :", req.body);
     const qry = req.body;
-    await Users.findOneAndUpdate(
+    const updataUser = await Users.findOneAndUpdate(
       { _id: qry._id },
       { $push: { user_img: qry.image } }
     );
-
+    await Place.findOneAndUpdate(
+      { _id: updataUser.agit },
+      { $push: { owner_img: qry.image } }
+    );
     // const qs = {
     //   service_name: "pinpoint",
     //   user_id: qry._id.toString(),
@@ -421,6 +422,9 @@ admin.post("/updateUserImage", async (req, res) => {
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
+
+// Old API ***************************************************
+
 
 admin.get("/checkExpire", async (req, res) => {
   try {
