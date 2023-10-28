@@ -218,7 +218,7 @@ admin.get("/getFollowers", async (req, res) => {
 // updateBasicInfo
 admin.post("/updateBasicInfo", async (req, res) => {
   try {
-    log("editProfile :", req.body);
+    log("updateBasicInfo :", req.body);
     const qry = req.body;
     const accessKey = qry.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
@@ -239,7 +239,7 @@ admin.post("/updateBasicInfo", async (req, res) => {
 // updateMyValues
 admin.post("/updateMyValues", async (req, res) => {
   try {
-    log("editProfile :", req.body);
+    log("updateMyValues :", req.body);
     const qry = req.body;
     const accessKey = qry.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
@@ -259,7 +259,7 @@ admin.post("/updateMyValues", async (req, res) => {
 
 admin.post("/updateMyNewValues", async (req, res) => {
   try {
-    log("editProfile :", req.body);
+    log("updateMyNewValues :", req.body);
     const qry = req.body;
     const accessKey = qry.accessKey;
     let user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
@@ -309,35 +309,19 @@ admin.post("/editProfile", async (req, res) => {
       { $set: qry.data }
     );
     let user = await Users.findOne({ _id: user_info._id });
-    const qs = {
-      service_name: "pinpoint",
-      user_id: user._id.toString(),
-    };
+    // const qs = {
+    //   service_name: "pinpoint",
+    //   user_id: user._id.toString(),
+    // };
 
-    // 은행정보 가져오기 **************************************************
-    let getLatest = await axios.get(getBankUrl, { params: qs });
-    let userLastBalance = 0;
-    // console.log("Get Latest : ", getLatest.data.data.item);
-    userLastBalance = getLatest.data.data.item.balance;
+    // // 은행정보 가져오기 **************************************************
+    // let getLatest = await axios.get(getBankUrl, { params: qs });
+    // let userLastBalance = 0;
+    // // console.log("Get Latest : ", getLatest.data.data.item);
+    // userLastBalance = getLatest.data.data.item.balance;
 
-    let returnParam = {
-      _id: user._id,
-      waiting: user.waiting,
-      user_name: user.name,
-      email: user.email,
-      user_img: user.user_img,
-      simple_msg: user.simple_msg,
-      job: user.job,
-      poss_multi: user.poss_multi,
-      poss_bldg: user.poss_bldg,
-      poss_facil: user.poss_facil,
-      poss_outdoor: user.poss_outdoor,
-      post: user.post,
-      contribution: user.contribution,
-      introduction: user.introduction,
-      balance: userLastBalance,
-    };
-    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: returnParam } });
+    let myInfo = common.setMyParams(user);
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
@@ -371,7 +355,7 @@ admin.get("/getImage", async (req, res) => {
 // registerBlind
 admin.post("/registerBlind", async (req, res) => {
   try {
-    log("editProfile :", req.body);
+    log("registerBlind :", req.body);
     const qry = req.body;
     const accessKey = qry.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
@@ -419,35 +403,19 @@ admin.post("/updateUserImage", async (req, res) => {
       { $push: { user_img: qry.image } }
     );
 
-    const qs = {
-      service_name: "pinpoint",
-      user_id: qry._id.toString(),
-    };
+    // const qs = {
+    //   service_name: "pinpoint",
+    //   user_id: qry._id.toString(),
+    // };
 
-    let getLatest = await axios.get(getBankUrl, { params: qs });
-    let userLastBalance = 0;
-    // console.log("Get Latest : ", getLatest.data.data.item);
-    userLastBalance = getLatest.data.data.item.balance;
+    // let getLatest = await axios.get(getBankUrl, { params: qs });
+    // let userLastBalance = 0;
+    // // console.log("Get Latest : ", getLatest.data.data.item);
+    // userLastBalance = getLatest.data.data.item.balance;
 
     let user = await Users.findOne({ _id: qry._id });
-    let returnParam = {
-      _id: user._id,
-      waiting: user.waiting,
-      user_name: user.name,
-      email: user.email,
-      user_img: user.user_img,
-      simple_msg: user.simple_msg,
-      job: user.job,
-      poss_multi: user.poss_multi,
-      poss_bldg: user.poss_bldg,
-      poss_facil: user.poss_facil,
-      poss_outdoor: user.poss_outdoor,
-      post: user.post,
-      contribution: user.contribution,
-      introduction: user.introduction,
-      balance: userLastBalance,
-    };
-    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: returnParam } });
+    let myInfo = common.setMyParams(user)
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
