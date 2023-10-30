@@ -31,6 +31,7 @@ const initMongo = async ()=>{
     await require('../model/ledger')
     await require('../model/simpleMsg')
     await require('../model/reply')
+    await require('../model/rereply')
     await require('../model/notice')
     await require('../model/ads')
     await require('./initTestDate')

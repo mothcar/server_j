@@ -84,4 +84,41 @@ reply.post("/createReply", async (req, res) => {
   }
 });
 
+//--------------------------------------------------
+// rereply functions
+//--------------------------------------------------
+
+reply.post("/createRereply", async (req, res) => {
+  try {
+    var qry = req.body;
+    // console.log('Qry : ', qry)
+    const accessKey = req.body.accessKey;
+    var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    console.log('TMS user_info : ', user_info)
+    var user_id = user_info._id;
+
+    let params = {
+      user_id: user_id,
+      nickname: user_info.nickname,
+      user_img: user_info.user_img,
+      parent_id: qry.parent_id,
+      comment: qry.comment,
+      type: qry.type
+    };
+
+    let reply = await Rereply.create(params);
+
+    await Reply.findOneAndUpdate( { _id: qry.parent_id }, { $push: { re_reply: reply._id} } );
+    const re_reply = await Reply.findOne({ _id: qry.parent_id }).populate("re_reply");
+    
+    res
+      .status(200)
+      .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: re_reply } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
+
 module.exports = reply;
