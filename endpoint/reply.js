@@ -101,12 +101,21 @@ reply.post("/deleteReply", async (req, res) => {
     await Reply.deleteOne(params);
 
     let result
-    await Post.findOneAndUpdate( { _id: qry.parent_id }, { $pull: { reply: qry._id} } );
-    let post = await Post.findOne({ _id: qry.parent_id }).populate("reply");
-    
+    if(qry.type==="STORY") {
+      await Post.findOneAndUpdate( { _id: qry.parent_id }, { $pull: { reply: qry._id} } );
+      result  = await Post.findOne({ _id: qry.parent_id }).populate("reply");
+    } else if(qry.type==="AGIT") {
+      await Place.findOneAndUpdate( { _id: qry.parent_id }, { $pull: { reply: qry._id} } );
+      result  = await Place.findOne({ _id: qry.parent_id }).populate("reply");
+    } else {
+      await Users.findOneAndUpdate( { _id: qry.parent_id }, { $pull: { reply: qry._id} } );
+      result  = await Users.findOne({ _id: qry.parent_id }).populate("reply");
+    }
+    // console.log('Result : ', result)
+
     res
       .status(200)
-      .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
+      .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: result } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
