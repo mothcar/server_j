@@ -84,6 +84,35 @@ reply.post("/createReply", async (req, res) => {
   }
 });
 
+
+reply.post("/deleteReply", async (req, res) => {
+  try {
+    var qry = req.body;
+    // console.log('Qry : ', qry)
+    // const accessKey = req.body.accessKey;
+    // var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    // console.log('TMS user_info : ', user_info)
+    // var user_id = user_info._id;
+
+    let params = {
+      _id: qry._id,
+    };
+
+    await Reply.deleteOne(params);
+
+    let result
+    await Post.findOneAndUpdate( { _id: qry.parent_id }, { $pull: { reply: qry._id} } );
+    let post = await Post.findOne({ _id: qry.parent_id }).populate("reply");
+    
+    res
+      .status(200)
+      .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
 //--------------------------------------------------
 // rereply functions
 //--------------------------------------------------
