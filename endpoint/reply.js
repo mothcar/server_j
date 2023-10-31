@@ -84,7 +84,6 @@ reply.post("/createReply", async (req, res) => {
   }
 });
 
-
 reply.post("/deleteReply", async (req, res) => {
   try {
     var qry = req.body;
@@ -152,6 +151,28 @@ reply.post("/createRereply", async (req, res) => {
     res
       .status(200)
       .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: re_reply } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
+reply.post("/deleteRereply", async (req, res) => {
+  try {
+    var qry = req.body;
+    let params = {
+      _id: qry._id,
+    };
+
+    await Rereply.deleteOne(params);
+
+    await Reply.findOneAndUpdate( { _id: qry.parent_id }, { $pull: { re_reply: qry._id} } );
+    let result  = await Reply.findOne({ _id: qry.parent_id }).populate("re_reply");
+    // console.log('Result : ', result)
+
+    res
+      .status(200)
+      .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: result } });
   } catch (err) {
     log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
