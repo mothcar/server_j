@@ -7,6 +7,7 @@ const place = express.Router({});
 const dateFormat = require("dateformat");
 const { ObjectId } = require("mongodb");
 const tms = require("../helper/tms");
+const common = require("../helper/common");
 
 //--------------------------------------------------
 // New functions
@@ -455,8 +456,21 @@ place.get("/getPlace", async (req, res) => {
     // console.log('Qry : ', qry)
 
     // let infocenter = await Infocenter.find().sort({$natural:-1}).limit(1)
-    let place = await Place.findOne(qry);
+    let place = await Place.findOne({_id: qry._id});
     let user = await Users.findOne({_id: place.owner._id.toString()})
+
+    let visitorInfo = { _id: ''}
+    if(qry.visotor) {
+      let time_obj = common.getToday();
+      const visitor = await Users.findOne({_id: qry.visotor})
+      visitorInfo = common.setMyParams(visitor)
+      // visitorInfo.date = time_obj.date
+      // visitorInfo.time = time_obj.time
+      let date = new Date();
+      visitorInfo.date = date
+    }
+    
+    await Place.findOneAndUpdate({_id: qry._id},{$push: {visitors: visitorInfo}})
     // Object.assign(place, {"userInfo": userInfo});
     // console.log('User Data : ', user)
     place.userInfo= {

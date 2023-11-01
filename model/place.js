@@ -23,6 +23,7 @@ let initSchema = async ()=>{
     owner_img:      {type:Array, default:[]},                     // 오너 image
     member:         [{type:mongoose.Schema.Types.ObjectId, ref:'users'}],    // community member 
     post:           [{type:mongoose.Schema.Types.ObjectId, ref:'post'}],     // post
+    visitors:       {type:Array, default:[]},                     // 방문자
     history:        [{type:mongoose.Schema.Types.ObjectId, ref:'history'}],  // history
 
     interest:        {type:Number, default: 0},                   // 관심도
