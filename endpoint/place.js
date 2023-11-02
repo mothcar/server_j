@@ -468,6 +468,10 @@ place.get("/getPlace", async (req, res) => {
       // visitorInfo.time = time_obj.time
       let date = new Date();
       visitorInfo.date = date
+    } else {
+      let date = new Date();
+      visitorInfo.nickname = '비회원'
+      visitorInfo.date = date
     }
     
     await Place.findOneAndUpdate({_id: qry._id},{$push: {visitors: visitorInfo}})
