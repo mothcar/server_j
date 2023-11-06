@@ -453,7 +453,7 @@ place.get("/getPlaces", async (req, res) => {
 place.get("/getPlace", async (req, res) => {
   try {
     var qry = req.query;
-    // console.log('Qry : ', qry)
+    console.log('Qry : ', qry)
 
     // let infocenter = await Infocenter.find().sort({$natural:-1}).limit(1)
     let place = await Place.findOne({_id: qry._id});
@@ -466,7 +466,8 @@ place.get("/getPlace", async (req, res) => {
       let visitorInfo = { _id: ''}
       if(qry.visitor) {
         let time_obj = common.getToday();
-        const visitor = await Users.findOne({_id: qry.visotor})
+        const visitor = await Users.findOne({_id: qry.visitor})
+        console.log('Visitor : ', visitor)
         visitorInfo = common.setMyParams(visitor)
         // visitorInfo.date = time_obj.date
         // visitorInfo.time = time_obj.time
