@@ -131,11 +131,11 @@ place.post("/inquirePlaceByClick", async (req, res) => {
         showPlace(isAddress);
       } else {
         let isName = await Place.findOne({ place_name: reqPlaceName });
-        console.log("Is name : ", isName);
+        // console.log("Is name : ", isName);
         if (isName) {
           showPlace(isName);
         } else {
-          console.log("Deep..............");
+          // console.log("Deep..............");
           let newParam = { road_address: isRoad.road_address };
           createPlaceAndMulti(isRoad._id, newParam);
           // showPlace(isName);
@@ -149,7 +149,7 @@ place.post("/inquirePlaceByClick", async (req, res) => {
     } else {
       let isRoad = await Place.findOne({ road_address: r_address });
       if (isRoad) {
-        console.log("First time ..............");
+        // console.log("First time ..............");
         let newParam = { road_address: isRoad.road_address };
         createPlaceAndMulti(isRoad._id, newParam);
       } else {
@@ -158,7 +158,7 @@ place.post("/inquirePlaceByClick", async (req, res) => {
     }
 
     async function showPlace(isRoad) {
-      console.log("원래 있던 place show!!");
+      // console.log("원래 있던 place show!!");
       await Place.findOneAndUpdate(
         { _id: isRoad._id },
         { $inc: { interest: 1 } }
@@ -197,7 +197,7 @@ place.post("/inquirePlaceByClick", async (req, res) => {
         interest: 1,
       };
       const fianl = await Place.create(createParams);
-      console.log("Create Place .....");
+      // console.log("Create Place .....");
       res
         .status(200)
         .json({ msg: RCODE.OPERATION_SUCCEED, data: { item: fianl } });
@@ -266,7 +266,7 @@ place.post("/inquirePlaceByClick", async (req, res) => {
           interest: 1,
         };
         await MultiPlace.create(createMultiParams);
-        console.log("created Multi !!");
+        // console.log("created Multi !!");
       } else {
         await MultiPlace.findOneAndUpdate(param, {
           $push: { possess: new ObjectId(createdPlace._id) },
@@ -344,7 +344,7 @@ place.post("/createPlace", async (req, res) => {
       admin_address: qry.admin_address,
       place_type: "MULTI",
     }).populate("bldg");
-    console.log("isMulti : ", isMulti);
+    // console.log("isMulti : ", isMulti);
     if (isMulti)
       res
         .status(200)
@@ -389,7 +389,7 @@ place.post("/createInner", async (req, res) => {
 
 place.get("/getOnePleces", async (req, res) => {
   try {
-    console.log("get One Place cafe24 server !!!!");
+    // console.log("get One Place cafe24 server !!!!");
     var qry = req.query;
 
     // let infocenter = await Infocenter.find().sort({$natural:-1}).limit(1)
@@ -398,7 +398,7 @@ place.get("/getOnePleces", async (req, res) => {
     // const searchWord ="서초구"
     // let places = await Place.find({r_depth_2: searchWord});
     let places = await Place.find({ admin_address: searchWord });
-    console.log("Places : ", places[0]);
+    // console.log("Places : ", places[0]);
     // res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
     res
       .status(200)
@@ -411,7 +411,7 @@ place.get("/getOnePleces", async (req, res) => {
 
 // copy from post getPosts with Reduce 
 place.get("/getPlaces", async (req, res) => {
-  console.log('Get Agits..................')
+  // console.log('Get Agits..................')
   try {
     let qry = req.query;
     // console.log('qry.b_lat : ', qry.b_lat)
@@ -457,40 +457,49 @@ place.get("/getPlace", async (req, res) => {
 
     // let infocenter = await Infocenter.find().sort({$natural:-1}).limit(1)
     let place = await Place.findOne({_id: qry._id});
-    let user = await Users.findOne({_id: place.owner._id.toString()})
+    // let user = await Users.findOne({_id: place.owner._id.toString()})
+    // console.log("place.owner : ", place.owner)
+    // console.log("qry.visitor : ", qry.visitor)
 
-    let visitorInfo = { _id: ''}
-    if(qry.visotor) {
-      let time_obj = common.getToday();
-      const visitor = await Users.findOne({_id: qry.visotor})
-      visitorInfo = common.setMyParams(visitor)
-      // visitorInfo.date = time_obj.date
-      // visitorInfo.time = time_obj.time
-      let date = new Date();
-      visitorInfo.date = date
-    } else {
-      let date = new Date();
-      visitorInfo.nickname = '비회원'
-      visitorInfo.date = date
+    if(place.owner.valueOf() == qry.visitor)  return res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
+    else {
+      let visitorInfo = { _id: ''}
+      if(qry.visitor) {
+        let time_obj = common.getToday();
+        const visitor = await Users.findOne({_id: qry.visotor})
+        visitorInfo = common.setMyParams(visitor)
+        // visitorInfo.date = time_obj.date
+        // visitorInfo.time = time_obj.time
+        let date = new Date();
+        visitorInfo.date = date
+      } else {
+        let date = new Date();
+        visitorInfo.nickname = '비회원'
+        visitorInfo.date = date
+      }
+
+      await Place.findOneAndUpdate({_id: qry._id},{$push: {visitors: visitorInfo}})
+      res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
     }
     
-    await Place.findOneAndUpdate({_id: qry._id},{$push: {visitors: visitorInfo}})
+    
     // Object.assign(place, {"userInfo": userInfo});
     // console.log('User Data : ', user)
-    place.userInfo= {
-      _id: user._id,
-      user_name: user.name,
-      nickname: user.nickname,
-      email: user.email,
-      user_img: user.user_img,
-      simple_msg: user.simple_msg,
-      job: user.job,
-      post: user.post,
-      balance: user.balance,
-      agit: user.agit,
-    };
+
+    // place.userInfo= {
+    //   _id: user._id,
+    //   user_name: user.name,
+    //   nickname: user.nickname,
+    //   email: user.email,
+    //   user_img: user.user_img,
+    //   simple_msg: user.simple_msg,
+    //   job: user.job,
+    //   post: user.post,
+    //   balance: user.balance,
+    //   agit: user.agit,
+    // };
     // console.log('Place info : ', place)
-    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
+    
     // res.status(200).json({ msg: RCODE.OPERATION_SUCCEED, data: { item: place } });
   } catch (err) {
     log("err=", err);
@@ -501,7 +510,7 @@ place.get("/getPlace", async (req, res) => {
 place.post("/editImage", async (req, res) => {
   try {
     var qry = req.body;
-    console.log('Qry editImage : ', qry)
+    // console.log('Qry editImage : ', qry)
     let place 
     await Place.findOneAndUpdate({_id:qry._id},{$push:{image:qry.image}})
     // console.log('Place changed : ', changed)
@@ -723,7 +732,7 @@ place.post("/createBldfromLocal", async (req, res) => {
       };
 
       let createdBuilding = await Place.create(createParams);
-      console.log("Created Building : ", createdBuilding);
+      // console.log("Created Building : ", createdBuilding);
 
       let findParams = {
         admin_address: editedAddress,
@@ -775,7 +784,7 @@ place.post("/createBldfromLocal", async (req, res) => {
             },
           };
           let createMulti = await Place.create(createMultiParams);
-          console.log("Created MUlti : ", createMulti);
+          // console.log("Created MUlti : ", createMulti);
 
           isPlaces.forEach(async (place) => {
             await Place.findOneAndUpdate(
