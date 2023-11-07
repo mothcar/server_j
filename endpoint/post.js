@@ -18,31 +18,31 @@ const common = require("../helper/common");
 //--------------------------------------------------
 
 post.get("/name", async (req, res) => {
-  log("name req.query :", req.query);
+  // log("name req.query :", req.query);
 
   try {
     let qry = req.query;
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.post("/name", async (req, res) => {
-  log("req.body :", req.body);
+  // log("req.body :", req.body);
 
   try {
     let qry = req.body;
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.post("/createContent", async (req, res) => {
-  log("req.body :", req.body);
+  // log("req.body :", req.body);
 
   try {
     let qry = req.body;
@@ -86,9 +86,9 @@ post.post("/createContent", async (req, res) => {
       let lastRecord = await Ledger.find({ user: user_id })
         .sort({ createdAt: -1 })
         .limit(1);
-      console.log("User Record : ", lastRecord);
+      // console.log("User Record : ", lastRecord);
       if (lastRecord.length > 0) bal = lastRecord[0].balance;
-      console.log("Error Check : ", bal);
+      // console.log("Error Check : ", bal);
       let rewardParams = {
         user: user_id,
         trans_date: time_obj.date,
@@ -113,14 +113,14 @@ post.post("/createContent", async (req, res) => {
       res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
     }
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 // answerQuest
 post.post("/answerQuest", async (req, res) => {
-  log("req.body :", req.body);
+  // log("req.body :", req.body);
 
   try {
     let qry = req.body;
@@ -157,9 +157,9 @@ post.post("/answerQuest", async (req, res) => {
       let lastRecord = await Ledger.find({ user: user_id })
         .sort({ createdAt: -1 })
         .limit(1);
-      console.log("User Record : ", lastRecord);
+      // console.log("User Record : ", lastRecord);
       if (lastRecord.length > 0) bal = lastRecord[0].balance;
-      console.log("Error Check : ", bal);
+      // console.log("Error Check : ", bal);
       let rewardParams = {
         user: user_id,
         trans_date: time_obj.date,
@@ -186,17 +186,17 @@ post.post("/answerQuest", async (req, res) => {
       // let validVal = rawVal.filter((item) => item != null);
 
       let myInfo = common.setMyParams(user);
-      console.log("set My Params : ", myInfo);
+      // console.log("set My Params : ", myInfo);
       res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
     }
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.post("/createQuest", async (req, res) => {
-  log("createQuest req.body :", req.body);
+  // log("createQuest req.body :", req.body);
 
   try {
     let qry = req.body;
@@ -240,9 +240,9 @@ post.post("/createQuest", async (req, res) => {
       let lastRecord = await Ledger.find({ user: user_id })
         .sort({ createdAt: -1 })
         .limit(1);
-      console.log("User Record : ", lastRecord);
+      // console.log("User Record : ", lastRecord);
       if (lastRecord.length > 0) bal = lastRecord[0].balance;
-      console.log("Error Check : ", bal);
+      // console.log("Error Check : ", bal);
       let rewardParams = {
         user: user_id,
         trans_date: time_obj.date,
@@ -267,13 +267,13 @@ post.post("/createQuest", async (req, res) => {
       res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
     }
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.post("/createNotice", async (req, res) => {
-  log("createNotice req.body :", req.body);
+  // log("createNotice req.body :", req.body);
 
   try {
     let qry = req.body;
@@ -317,9 +317,9 @@ post.post("/createNotice", async (req, res) => {
       let lastRecord = await Ledger.find({ user: user_id })
         .sort({ createdAt: -1 })
         .limit(1);
-      console.log("User Record : ", lastRecord);
+      // console.log("User Record : ", lastRecord);
       if (lastRecord.length > 0) bal = lastRecord[0].balance;
-      console.log("Error Check : ", bal);
+      // console.log("Error Check : ", bal);
       let rewardParams = {
         user: user_id,
         trans_date: time_obj.date,
@@ -344,7 +344,7 @@ post.post("/createNotice", async (req, res) => {
       res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
     }
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 }); // createNotice
@@ -357,13 +357,13 @@ post.get("/getQuest", async (req, res) => {
     const quests = await Quest.find();
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: quests } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.post("/removeStory", async (req, res) => {
-  log("removeStory req.body :", req.body);
+  // log("removeStory req.body :", req.body);
   try {
     let qry = req.body;
 
@@ -380,53 +380,56 @@ post.post("/removeStory", async (req, res) => {
     );
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: updatePlace } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.post("/eidtPost", async (req, res) => {
-  log("eidtPost req.body :", req.body);
+  // log("eidtPost req.body :", req.body);
   try {
     let qry = req.body;
     const accessKey = qry.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
     var user_id = user_info._id;
 
-    await Post.findOneAndUpdate({ _id: qry.id },{$set: {og_title: qry.og_title, comment: qry.comment}});
+    await Post.findOneAndUpdate(
+      { _id: qry.id },
+      { $set: { og_title: qry.og_title, comment: qry.comment } }
+    );
     const post = await Post.findOne({ _id: qry.id });
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.get("/getOnePost", async (req, res) => {
-  log("name req.query :", req.query);
+  // log("name req.query :", req.query);
   try {
     let qry = req.query;
-    await Post.findOneAndUpdate({ _id: qry.id },{ $inc: { hits: 1 } });
+    await Post.findOneAndUpdate({ _id: qry.id }, { $inc: { hits: 1 } });
     const post = await Post.findOne({ _id: qry.id });
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.post("/addLike", async (req, res) => {
-  log("removeStory req.body :", req.body);
+  // log("removeStory req.body :", req.body);
   try {
     let qry = req.body;
 
     // place id : 651ab8ea26808370f63596e3
-    await Post.findOneAndUpdate({ _id: qry.id },{$inc:{like:qry.like}});
+    await Post.findOneAndUpdate({ _id: qry.id }, { $inc: { like: qry.like } });
     const post = await Post.findOne({ _id: qry.id });
-    
+
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
@@ -476,51 +479,74 @@ post.get("/getPosts", async (req, res) => {
     }, []);
 
     // postType = '📣 공지사항'
-    let getNotice = await Post.find({post_type:'📣 공지사항'}).sort({ createdAt: -1 }) .limit(1);
+    let getNotice = await Post.find({ post_type: "📣 공지사항" })
+      .sort({ createdAt: -1 })
+      .limit(1);
     // console.log('getPosts return : ', posts)
-    let mixResult = getNotice.concat(posts)
+    let mixResult = getNotice.concat(posts);
 
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: mixResult } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 }); // getPosts
 
-// 
+//
 post.get("/getLocalPosts", async (req, res) => {
-  log("getLocalPosts req.query :", req.query);
+  // log("getLocalPosts req.query :", req.query);
   try {
     let qry = req.query;
 
     // $ne: r_depth_1
-    var posts = await Post.find({r_depth_2: {$ne: qry.r_depth_2} })
+    var posts = await Post.find({ r_depth_2: { $ne: qry.r_depth_2 } })
       .sort({ createdAt: -1 })
       .limit(5); // 15
     // posts = _.uniqBy(posts, "admin_address");
     // console.log('getPosts return : ', posts)
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 }); // getLocalPosts
+//
+post.get("/getUserPosts", async (req, res) => {
+  // log("getUserPosts req.query :", req.query);
+  try {
+    let qry = req.query;
 
-// 
+    // $ne: r_depth_1
+    var posts = await Post.find({ user_id: qry.userId })
+      .sort({ createdAt: -1 })
+      .limit(5); // 15
+    // posts = _.uniqBy(posts, "admin_address");
+    // console.log('getPosts return : ', posts)
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
+  } catch (err) {
+    // log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+}); // getUserPosts
+
+//
 post.get("/getCatePosts", async (req, res) => {
   log("getLocalPosts req.query :", req.query);
   try {
     let qry = req.query;
 
     // $ne: r_depth_1
-    var posts = await Post.find({r_depth_1: qry.r_depth_1, post_type: qry.post_type})
+    var posts = await Post.find({
+      r_depth_1: qry.r_depth_1,
+      post_type: qry.post_type,
+    })
       .sort({ createdAt: -1 })
       .limit(5); // 15
     // posts = _.uniqBy(posts, "admin_address");
     // console.log('getPosts return : ', posts)
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 }); // getCatePosts
@@ -540,10 +566,10 @@ post.get("/getLocalPosts", async (req, res) => {
     };
     let posts = await Post.find(qry);
     if (posts.length < 1) {
-      console.log("1st post#57 : ", posts.length);
+      // console.log("1st post#57 : ", posts.length);
       posts = await Post.find(emptyParams);
       if (posts.length < 1) {
-        console.log("2st : ", posts.length);
+        // console.log("2st : ", posts.length);
         emptyParams = {
           r_depth_1: qry.r_depth_1,
         };
@@ -552,7 +578,7 @@ post.get("/getLocalPosts", async (req, res) => {
     }
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
@@ -615,7 +641,7 @@ post.get("/getLocalPosts", async (req, res) => {
 
 // simple msg
 post.post("/createSimpleMsg", async (req, res) => {
-  log("req.body :", req.body);
+  // log("req.body :", req.body);
 
   try {
     let qry = req.body;
@@ -644,7 +670,7 @@ post.post("/createSimpleMsg", async (req, res) => {
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: msgs } });
     // console.log('post Result : ', post)
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 }); //testCreatepost
@@ -659,13 +685,13 @@ post.get("/getMsgs", async (req, res) => {
       .sort({ $natural: -1 });
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: msgs } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.post("/createOnePost", async (req, res) => {
-  log("req.body :", req.body);
+  // log("req.body :", req.body);
 
   try {
     let qry = req.body;
@@ -689,20 +715,20 @@ post.post("/createOnePost", async (req, res) => {
       location: qry.location,
     };
 
-    console.log("Params : ", params);
+    // console.log("Params : ", params);
 
     let post = await Post.create(params);
-    console.log("Created...", post);
+    // console.log("Created...", post);
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
     // console.log('post Result : ', post)
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 }); //testCreatepost
 
 post.post("/createPost", async (req, res) => {
-  log("req.body :", req.body);
+  // log("req.body :", req.body);
 
   try {
     const accessKey = req.body.accessKey;
@@ -776,10 +802,10 @@ post.post("/createPost", async (req, res) => {
       // 은행정보 가져오기 **************************************************
       let getLatest = await axios.get(getBankUrl, { params: qs });
       let userLastBalance = 0;
-      console.log("Get Latest : ", getLatest.data.data.item);
+      // console.log("Get Latest : ", getLatest.data.data.item);
       userLastBalance = getLatest.data.data.item.balance;
 
-      console.log("User Balance : ", userLastBalance);
+      // console.log("User Balance : ", userLastBalance);
 
       userLastBalance += REWARD.createPost;
       // 유저에게 가입시 2천원 지급  param
@@ -795,7 +821,7 @@ post.post("/createPost", async (req, res) => {
       };
 
       let insertRecord = await axios.post(postBankurl, createParams);
-      console.log("Bank Result : ", insertRecord.data.data.item);
+      // console.log("Bank Result : ", insertRecord.data.data.item);
     }
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
 
@@ -844,13 +870,13 @@ post.post("/createPost", async (req, res) => {
 
     // Add post to User
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.get("/getRewardPointPolicy", async (req, res) => {
-  log("getRewardPointPolicy req.query :", req.query);
+  // log("getRewardPointPolicy req.query :", req.query);
   // log('test : req.query :', req.query)
 
   try {
@@ -860,13 +886,13 @@ post.get("/getRewardPointPolicy", async (req, res) => {
     // let post = await post.create(params)
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: pointPolicy } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.get("/getpost", async (req, res) => {
-  log("getpost req.query :", req.query);
+  // log("getpost req.query :", req.query);
   // log('test : req.query :', req.query)
 
   try {
@@ -874,13 +900,13 @@ post.get("/getpost", async (req, res) => {
     let post = await Post.findOne(qry).populate("reply user_id");
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
 
 post.get("/getByqueryParams", async (req, res) => {
-  log("getByqueryParams req.query :", req.query);
+  // log("getByqueryParams req.query :", req.query);
   // log('test : req.query :', req.query)
 
   try {
@@ -889,7 +915,7 @@ post.get("/getByqueryParams", async (req, res) => {
     let posts = await Post.find(qry).sort({ createdAt: -1 });
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: posts } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
@@ -912,7 +938,7 @@ post.post("/updatePost", async (req, res) => {
     );
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: updatedPost } });
   } catch (err) {
-    log("err=", err);
+    // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
 });
