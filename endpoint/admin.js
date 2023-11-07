@@ -299,9 +299,9 @@ admin.post("/introduction", async (req, res) => {
 });
 
 //
-admin.post("/editProfile", async (req, res) => {
+admin.post("/editNickname", async (req, res) => {
   try {
-    log("editProfile :", req.body);
+    log("editNickname :", req.body);
     const qry = req.body;
     const accessKey = qry.accessKey;
     var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
@@ -320,6 +320,27 @@ admin.post("/editProfile", async (req, res) => {
     // let userLastBalance = 0;
     // // console.log("Get Latest : ", getLatest.data.data.item);
     // userLastBalance = getLatest.data.data.item.balance;
+
+    let myInfo = common.setMyParams(user);
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
+
+admin.post("/editBirth", async (req, res) => {
+  try {
+    log("editBirth :", req.body);
+    const qry = req.body;
+    const accessKey = qry.accessKey;
+    var user_info = tms.jwt.verify(accessKey, TOKEN.SECRET);
+    await Users.findOneAndUpdate(
+      { _id: user_info._id },
+      { $set: qry.data }
+    );
+    let user = await Users.findOne({ _id: user_info._id });
 
     let myInfo = common.setMyParams(user);
     res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: myInfo } });
