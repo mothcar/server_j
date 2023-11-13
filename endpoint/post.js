@@ -551,6 +551,42 @@ post.get("/getCatePosts", async (req, res) => {
   }
 }); // getCatePosts
 
+post.post("/editImage", async (req, res) => {
+  try {
+    var qry = req.body;
+    console.log('Qry editImage : ', qry)
+    // let imageParce = JSON.parse(qry.images);
+    let post 
+    await Post.findOneAndUpdate({_id:qry._id},{$push:{images:qry.image}})
+    // console.log('Place changed : ', changed)
+    post = await Post.findOne({_id:qry._id})
+    // console.log('post : ', post)
+    res.json({ msg: RCODE.OPERATION_SUCCEED, data: { item: post } });
+  } catch (err) {
+    log("err=", err);
+    res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
+  }
+});
+
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
+//--------------------------------------------------
 //--------------------------------------------------
 // New functions 2022
 //--------------------------------------------------
@@ -673,7 +709,7 @@ post.post("/createSimpleMsg", async (req, res) => {
     // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
-}); //testCreatepost
+}); 
 
 // getMsgs
 post.get("/getMsgs", async (req, res) => {
@@ -725,9 +761,9 @@ post.post("/createOnePost", async (req, res) => {
     // log("err=", err);
     res.status(500).json({ msg: RCODE.SERVER_ERROR, data: {} });
   }
-}); //testCreatepost
+}); 
 
-post.post("/createPost", async (req, res) => {
+post.post("/createOldPost", async (req, res) => {
   // log("req.body :", req.body);
 
   try {
