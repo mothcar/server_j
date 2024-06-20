@@ -406,7 +406,7 @@ post.post("/eidtPost", async (req, res) => {
 });
 
 post.get("/getOnePost", async (req, res) => {
-  // log("name req.query :", req.query);
+  log("name req.query :", req.query);
   try {
     let qry = req.query;
     await Post.findOneAndUpdate({ _id: qry.id }, { $inc: { hits: 1 } });
